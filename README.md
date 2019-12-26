@@ -1,16 +1,15 @@
 # Winter
 
 Simple ORM library written in Java using Spring
-Documentation in Swagger: http://localhost:8080/swagger-ui.html
 
 ## Project workflow
 
-	1. Create issue fix or feature.
+	1. Create fix or feature issue.
 	2. Create new branch with name matching pattern fix/#{issue num.} or feature/#{issue num.}
 	3. Work. Remember to pull new changes frequently.
 	4. Commit.
-	5. Rebase to master.
-	6. Push.
+	5. Rebase on top of master.
+	6. Push. Solve conflicts.
 	7. Create merge request.
 	8. Fix bugs and commit.
 	9. Merge to master.
