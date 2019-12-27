@@ -8,4 +8,8 @@ public class Dao<T> {
     public T findById(String s) {
         return null;
     }
+
+	public void createTable() {
+		
+	}
 }
