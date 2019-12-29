@@ -10,11 +10,11 @@ public class Person {
 
     @Id
     @DatabaseField
-    String pesel;
+    private String pesel;
     @DatabaseField
-    String name;
+    private String name;
     @DatabaseField
-    String surname;
+    private String surname;
 
     public Person(String pesel, String name, String surname) {
         this.pesel = pesel;
