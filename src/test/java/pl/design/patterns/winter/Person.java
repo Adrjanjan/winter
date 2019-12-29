@@ -1,48 +1,30 @@
 package pl.design.patterns.winter;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import pl.design.patterns.winter.annotations.DatabaseField;
 import pl.design.patterns.winter.annotations.DatabaseTable;
 import pl.design.patterns.winter.annotations.Id;
 import pl.design.patterns.winter.inheritance.mapping.SingleTableInheritance;
 
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 @DatabaseTable(inheritanceMapper = SingleTableInheritance.class)
 public class Person {
 
-    @Id
+    @Id(generated = true)
+    @DatabaseField
+    int id;
+
     @DatabaseField
     String pesel;
+
     @DatabaseField
-    String name;
+    String firstName;
+
     @DatabaseField
-    String surname;
+    String lastName;
 
-    public Person(String pesel, String name, String surname) {
-        this.pesel = pesel;
-        this.name = name;
-        this.surname = surname;
-    }
-
-    public String getPesel() {
-        return pesel;
-    }
-
-    public void setPesel(String pesel) {
-        this.pesel = pesel;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getSurname() {
-        return surname;
-    }
-
-    public void setSurname(String surname) {
-        this.surname = surname;
-    }
 }

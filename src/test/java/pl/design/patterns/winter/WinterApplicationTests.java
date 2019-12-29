@@ -13,12 +13,18 @@ class WinterApplicationTests {
 	void SimpleInheritanceMappingTest() {
 		WinterDataSource ds = new WinterDataSource(/*PARAMETERS*/);
 
-		Dao<Student> studentDao = (Dao<Student>) OrmManager.getDao(Student.class);
+        Dao<Student> studentDao = OrmManager.getDao(Student.class);
 
-		Student addedStudent = new Student("Computer Science", "222222", "12345678910", "On", "On");
-		studentDao.add(addedStudent);
+        Student addedStudent = new Student();
+        addedStudent.setFieldOfStudy("Computer Science");
+        addedStudent.setUniversityId(222);
+        addedStudent.setPesel("12345678910");
+        addedStudent.setFirstName("Jan");
+        addedStudent.setLastName("Kowalski");
 
-		Student studentFromDb = studentDao.findById("12345678910");
+        studentDao.insert(addedStudent);
+
+        Student studentFromDb = studentDao.findById(1);
 
 		assertEquals(studentFromDb, addedStudent);
 	}
