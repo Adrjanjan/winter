@@ -31,9 +31,9 @@ public class DatabaseStructureCreator implements CommandLineRunner {
 			DaoCreator.create(clazz);
 		}
 
-		List<Dao<?>> daos = DaoCreator.getAll();
+        List<Dao<?>> daos = OrmManager.getAll();
 		for (Dao<?> dao : daos) {
-			dao.createTable();
+            //dao.createTable();
 		}
 	}
 

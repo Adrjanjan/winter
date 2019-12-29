@@ -1,14 +1,14 @@
 package pl.design.patterns.winter.dao;
 
-import java.util.List;
+import pl.design.patterns.winter.OrmManager;
+import pl.design.patterns.winter.inheritance.mapping.TableType;
 
 public class DaoCreator {
 
 	public static void create(Class<?> clazz) {
-		return;
-	}
+        TableType tableInfo = new TableType(clazz);
 
-	public static List<Dao<?>> getAll() {
-		return null;
-	}
+        OrmManager.addDao(clazz, new Dao<>(tableInfo));
+    }
+
 }
