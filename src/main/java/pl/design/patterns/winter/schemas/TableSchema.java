@@ -1,7 +1,6 @@
 package pl.design.patterns.winter.schemas;
 
 import java.util.List;
-import java.util.Map;
 
 import lombok.Builder;
 import lombok.Data;
@@ -16,8 +15,6 @@ public class TableSchema<T> {
     private String tableName;
 
     private List<ColumnSchema> fields;
-
-    private Map<Class<T>, ColumnSchema> classDiscriminators;
 
     private ColumnSchema idField;
 }

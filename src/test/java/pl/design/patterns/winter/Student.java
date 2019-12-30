@@ -2,7 +2,7 @@ package pl.design.patterns.winter;
 
 import pl.design.patterns.winter.annotations.DatabaseField;
 import pl.design.patterns.winter.annotations.DatabaseTable;
-import pl.design.patterns.winter.inheritance.mapping.SingleTableInheritance;
+import pl.design.patterns.winter.inheritance.mappers.SingleTableInheritance;
 
 @DatabaseTable(inheritanceMapper = SingleTableInheritance.class)
 public class Student extends UniversityPerson {

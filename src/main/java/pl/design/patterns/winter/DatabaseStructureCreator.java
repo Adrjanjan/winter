@@ -1,16 +1,18 @@
 package pl.design.patterns.winter;
 
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
 import org.springframework.core.type.filter.AnnotationTypeFilter;
 import org.springframework.stereotype.Component;
+
 import pl.design.patterns.winter.annotations.DatabaseTable;
 import pl.design.patterns.winter.dao.Dao;
 import pl.design.patterns.winter.dao.DaoCreator;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Component
 public class DatabaseStructureCreator implements CommandLineRunner {
@@ -22,7 +24,7 @@ public class DatabaseStructureCreator implements CommandLineRunner {
 		new DatabaseStructureCreator().prepareDatabase();
 	}
 
-	public void prepareDatabase() {
+    public void prepareDatabase() throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
 		List<Class<?>> annotatedClasses = findAnnotatedClasses("pl.design.patterns.winter");
 		for (Class<?> clazz : annotatedClasses) {
 			// testing purposes only

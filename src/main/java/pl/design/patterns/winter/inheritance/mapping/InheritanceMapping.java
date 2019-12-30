@@ -1,4 +1,8 @@
 package pl.design.patterns.winter.inheritance.mapping;
 
-public class InheritanceMapping {
+import pl.design.patterns.winter.schemas.TableSchema;
+
+public interface InheritanceMapping {
+    TableSchema getTableSchema();
+
 }
