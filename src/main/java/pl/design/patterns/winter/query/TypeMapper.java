@@ -1,6 +1,5 @@
 package pl.design.patterns.winter.query;
 
-import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 
 import javax.lang.model.type.NullType;
@@ -9,7 +8,7 @@ import java.sql.Timestamp;
 import java.util.Date;
 
 public class TypeMapper implements ITypeMapper {
-    private BiMap<Class, JDBCType> javaToSqlTypes;
+    private HashBiMap<Class, JDBCType> javaToSqlTypes;
 
     public TypeMapper() {
         javaToSqlTypes = HashBiMap.create();
