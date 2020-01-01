@@ -5,11 +5,10 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-
-
 @Retention(RetentionPolicy.RUNTIME)
+//Nie jestem pewien czy nie powinno być ElementType.TYPE ...?
 @Target(ElementType.FIELD)
-public @interface Id {
-    boolean generated() default false;
+public @interface JoinColumn {
+    String name() default "";
+    String referencedColumnName();
 }
-
