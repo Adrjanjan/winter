@@ -1,4 +1,21 @@
 package pl.design.patterns.winter.annotations;
 
-public @interface DatabaseField {
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+/*
+ADNOTACJE:
+    KnuckleBones: https://github.com/Iubalus/Knucklebones/tree/master/src/main/java/com/jubalrife/knucklebones/v1/annotation
+    ORMLite: https://github.com/j256/ormlite-core/blob/master/src/main/java/com/j256/ormlite/field/DatabaseField.java
+    Hibernate: https://github.com/hibernate/hibernate-orm/tree/master/hibernate-core/src/main/java/org/hibernate/annotations
+ */
+
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.FIELD)
+public @interface DatabaseField{
+
+    String name() default "";
+    boolean nullable() default true;
 }
