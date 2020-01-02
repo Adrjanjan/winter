@@ -8,6 +8,5 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 public @interface DiscriminatorValue {
-    // Można ewentualnie zmienić na long'a
-    int value();
+    String value();
 }

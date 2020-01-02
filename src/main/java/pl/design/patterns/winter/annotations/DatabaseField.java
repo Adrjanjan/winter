@@ -14,11 +14,8 @@ ADNOTACJE:
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
-public @interface DatabaseField {
-    //generalnie name powinno być defaultowo nazwą pola w klasie, ale w adnotacji tego nie ustawię bo default musi być constant
-    //ORMLite ma tak samo z tego co widzę tu (https://github.com/j256/ormlite-core/blob/master/src/main/java/com/j256/ormlite/field/DatabaseField.java)
+public @interface DatabaseField{
+
     String name() default "";
     boolean nullable() default true;
-    //Czy to jest potrzebne skoro w JoinColumn mamy adnotacje o foreignKey ...?
-    boolean foreignKey() default false;
 }
