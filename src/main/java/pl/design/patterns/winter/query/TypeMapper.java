@@ -7,7 +7,7 @@ import java.sql.JDBCType;
 import java.sql.Timestamp;
 import java.util.Date;
 
-public class TypeMapper implements ITypeMapper {
+public class TypeMapper {
     private HashBiMap<Class, JDBCType> javaToSqlTypes;
 
     public TypeMapper() {
@@ -27,17 +27,14 @@ public class TypeMapper implements ITypeMapper {
         this.javaToSqlTypes.put(Date.class, JDBCType.DATE);
     }
 
-    @Override
     public JDBCType getSqlType(Class cl) {
         return javaToSqlTypes.get(cl);
     }
 
-    @Override
     public Class getJavaType(JDBCType type) {
         return javaToSqlTypes.inverse().get(type);
     }
 
-    @Override
     public void addMapping(Class classObject, JDBCType type) {
         this.javaToSqlTypes.put(classObject, type);
     }
