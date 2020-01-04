@@ -3,17 +3,26 @@ package pl.design.patterns.winter.inheritance.mapping;
 import java.util.List;
 import java.util.Map;
 
+import pl.design.patterns.winter.annotations.DiscriminatorValue;
 import pl.design.patterns.winter.schemas.ColumnSchema;
 import pl.design.patterns.winter.schemas.TableSchema;
 
-public class SingleTableMapping<T> implements InheritanceMapping {
-    private TableSchema<? super T> tableSchema;
+import lombok.Builder;
 
-    private Map<Class<T>, List<ColumnSchema>> classToColumns;
+@Builder
+public class SingleTableMapping<T> implements InheritanceMapping {
+    private TableSchema<? extends T> tableSchema;
+
+    private Map<String, List<ColumnSchema>> listOfColumnDiscriminators;
 
     @Override
     public TableSchema getTableSchema(Class clazz) {
-        return null;
+        return tableSchema.withNewColumns(listOfColumnDiscriminators.get(getClassDiscriminator(clazz)));
+    }
+
+    private String getClassDiscriminator(Class<T> clazz) {
+        return clazz.getDeclaredAnnotation(DiscriminatorValue.class)
+                .value();
     }
 
 }

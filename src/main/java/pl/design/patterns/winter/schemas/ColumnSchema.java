@@ -32,12 +32,14 @@ public class ColumnSchema {
 
     private boolean isNullable;
 
+    private boolean isForeignKey;
+
     public ColumnSchema(Field field) {
         final var databaseFieldAnnotation = field.getAnnotation(DatabaseField.class);
         this.columnName = databaseFieldAnnotation.name()
                 .equals("") ? field.getName() : databaseFieldAnnotation.name();
         this.isGeneratedId = field.getAnnotation(Id.class)
-                .generate();
+                .generated();
         this.isNullable = databaseFieldAnnotation.nullable();
         this.javaType = field.getType();
         this.sqlType = TypeMapper.get(this.javaType);
