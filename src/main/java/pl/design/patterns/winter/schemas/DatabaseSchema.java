@@ -3,8 +3,11 @@ package pl.design.patterns.winter.schemas;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.springframework.stereotype.Component;
+
 import pl.design.patterns.winter.inheritance.mapping.InheritanceMapping;
 
+@Component
 public class DatabaseSchema {
     private Map<Class<?>, InheritanceMapping<?>> classToTable = new HashMap<>();
 
