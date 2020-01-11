@@ -1,18 +1,16 @@
 package pl.design.patterns.winter.inheritance.mappers;
 
 import java.lang.reflect.Field;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
-import pl.design.patterns.winter.inheritance.mapping.ConcreteTableMapping;
 import pl.design.patterns.winter.inheritance.mapping.InheritanceMapping;
 import pl.design.patterns.winter.schemas.TableSchema;
 
-public class ConcreteTableInheritance extends InheritanceMapper {
+public class ConcreteTableInheritanceMapper extends InheritanceMapper {
 
     @Override
-    public <T> InheritanceMapping<T> map(Class<T> clazz) {
+    <T> InheritanceMapping mapInheritance(Class<T> clazz) {
+
         Set<Field> fields = new HashSet<>(Arrays.asList(clazz.getDeclaredFields()));
         final var idField = getIdField(clazz, fields);
 
@@ -23,13 +21,20 @@ public class ConcreteTableInheritance extends InheritanceMapper {
             superclass = superclass.getSuperclass();
         }
 
+        final var columnSchemas = createColumnSchemas(fields);
+
         TableSchema<T> tableSchema = TableSchema.<T> builder()
                 .clazz(clazz)
                 .tableName(resolveTableName(clazz))
-                .columns(createColumnSchemas(fields))
+                .columns(columnSchemas)
                 .idField(idField)
                 .build();
 
-        return new ConcreteTableMapping<T>(tableSchema);
+        final Map<String, TableSchema> mapping = new HashMap<>();
+        fields.stream()
+                .map(Field::getName)
+                .forEach(name -> mapping.put(name, tableSchema));
+
+        return new InheritanceMapping(mapping);
     }
 }

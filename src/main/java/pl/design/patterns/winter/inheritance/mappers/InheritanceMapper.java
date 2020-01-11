@@ -5,16 +5,27 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import pl.design.patterns.winter.annotations.DatabaseField;
 import pl.design.patterns.winter.annotations.DatabaseTable;
 import pl.design.patterns.winter.annotations.Id;
 import pl.design.patterns.winter.exceptions.NoIdFieldException;
 import pl.design.patterns.winter.inheritance.mapping.InheritanceMapping;
 import pl.design.patterns.winter.schemas.ColumnSchema;
+import pl.design.patterns.winter.schemas.DatabaseSchema;
 
 public abstract class InheritanceMapper {
 
-    public abstract <T> InheritanceMapping<T> map(Class<T> clazz);
+    @Autowired
+    DatabaseSchema databaseSchema;
+
+    public <T> void map(Class<T> clazz) {
+        InheritanceMapping mapping = mapInheritance(clazz);
+        databaseSchema.addMapping(clazz, mapping);
+    }
+
+    abstract <T> InheritanceMapping mapInheritance(Class<T> clazz);
 
     List<ColumnSchema> createColumnSchemas(Set<Field> fields) {
         return fields.stream()

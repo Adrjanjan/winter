@@ -1,41 +1,38 @@
 package pl.design.patterns.winter.query;
 
-import com.google.common.collect.HashBiMap;
-
-import javax.lang.model.type.NullType;
 import java.sql.JDBCType;
 import java.sql.Timestamp;
 import java.util.Date;
 
+import javax.lang.model.type.NullType;
+
+import com.google.common.collect.HashBiMap;
+
 public class TypeMapper {
-    private HashBiMap<Class, JDBCType> javaToSqlTypes;
+    private static HashBiMap<Class, JDBCType> javaToSqlTypes;
 
-    public TypeMapper() {
+    static {
         javaToSqlTypes = HashBiMap.create();
-        generateAllTypes();
+        javaToSqlTypes.put(Integer.class, JDBCType.INTEGER);
+        javaToSqlTypes.put(String.class, JDBCType.VARCHAR);
+        javaToSqlTypes.put(Float.class, JDBCType.FLOAT);
+        javaToSqlTypes.put(Double.class, JDBCType.DOUBLE);
+        javaToSqlTypes.put(Boolean.class, JDBCType.BOOLEAN);
+        javaToSqlTypes.put(Character.class, JDBCType.CHAR);
+        javaToSqlTypes.put(NullType.class, JDBCType.NULL);
+        javaToSqlTypes.put(Timestamp.class, JDBCType.TIMESTAMP);
+        javaToSqlTypes.put(Date.class, JDBCType.DATE);
     }
 
-    private void generateAllTypes() {
-        this.javaToSqlTypes.put(Integer.class, JDBCType.INTEGER);
-        this.javaToSqlTypes.put(String.class, JDBCType.VARCHAR);
-        this.javaToSqlTypes.put(Float.class, JDBCType.FLOAT);
-        this.javaToSqlTypes.put(Double.class, JDBCType.DOUBLE);
-        this.javaToSqlTypes.put(Boolean.class, JDBCType.BOOLEAN);
-        this.javaToSqlTypes.put(Character.class, JDBCType.CHAR);
-        this.javaToSqlTypes.put(NullType.class, JDBCType.NULL);
-        this.javaToSqlTypes.put(Timestamp.class, JDBCType.TIMESTAMP);
-        this.javaToSqlTypes.put(Date.class, JDBCType.DATE);
-    }
-
-    public JDBCType getSqlType(Class cl) {
+    public static JDBCType getSqlType(Class cl) {
         return javaToSqlTypes.get(cl);
     }
 
-    public Class getJavaType(JDBCType type) {
+    public static Class getJavaType(JDBCType type) {
         return javaToSqlTypes.inverse().get(type);
     }
 
-    public void addMapping(Class classObject, JDBCType type) {
-        this.javaToSqlTypes.put(classObject, type);
+    public static void addMapping(Class classObject, JDBCType type) {
+        javaToSqlTypes.put(classObject, type);
     }
 }

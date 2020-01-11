@@ -3,22 +3,25 @@ package pl.design.patterns.winter.schemas;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import pl.design.patterns.winter.inheritance.mapping.InheritanceMapping;
 
 @Component
+@Scope("singleton")
 public class DatabaseSchema {
-    private Map<Class<?>, InheritanceMapping<?>> classToTable = new HashMap<>();
+
+    private Map<Class<?>, InheritanceMapping> classToTable = new HashMap<>();
 
     @SuppressWarnings("unchecked")
-    public <T> InheritanceMapping<T> getMapping(Class<T> clazz) {
-        return (InheritanceMapping<T>) classToTable.get(clazz);
+    public <T> InheritanceMapping getMapping(Class<T> clazz) {
+        return classToTable.get(clazz);
     }
 
     @SuppressWarnings("unchecked")
-    public <T> InheritanceMapping<T> addMapping(Class<T> clazz, InheritanceMapping inheritanceMapping) {
-        return (InheritanceMapping<T>) classToTable.put(clazz, inheritanceMapping);
+    public <T> InheritanceMapping addMapping(Class<T> clazz, InheritanceMapping inheritanceMapping) {
+        return classToTable.put(clazz, inheritanceMapping);
     }
 
 }

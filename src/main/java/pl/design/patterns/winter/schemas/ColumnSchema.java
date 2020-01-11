@@ -3,14 +3,13 @@ package pl.design.patterns.winter.schemas;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.lang.reflect.Type;
 import java.sql.SQLType;
 
 import org.springframework.util.StringUtils;
 
 import pl.design.patterns.winter.annotations.DatabaseField;
 import pl.design.patterns.winter.annotations.Id;
-import pl.design.patterns.winter.inheritance.mapping.TypeMapper;
+import pl.design.patterns.winter.query.TypeMapper;
 
 import lombok.Data;
 
@@ -26,7 +25,7 @@ public class ColumnSchema {
 
     private SQLType sqlType;
 
-    private Type javaType;
+    private Class javaType;
 
     private boolean isGeneratedId;
 
@@ -42,7 +41,7 @@ public class ColumnSchema {
                 .generated();
         this.isNullable = databaseFieldAnnotation.nullable();
         this.javaType = field.getType();
-        this.sqlType = TypeMapper.get(this.javaType);
+        this.sqlType = TypeMapper.getSqlType(field.getType());
         this.parent = field.getDeclaringClass();
 
         try {
