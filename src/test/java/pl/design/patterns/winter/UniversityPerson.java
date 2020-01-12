@@ -3,9 +3,8 @@ package pl.design.patterns.winter;
 import pl.design.patterns.winter.annotations.DatabaseField;
 import pl.design.patterns.winter.annotations.DatabaseTable;
 import pl.design.patterns.winter.annotations.Id;
-import pl.design.patterns.winter.inheritance.mapping.SingleTableInheritance;
 
-@DatabaseTable(inheritanceMapper = SingleTableInheritance.class)
+@DatabaseTable()
 public class UniversityPerson extends Person {
 
     @Id
