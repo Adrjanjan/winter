@@ -15,6 +15,8 @@ import lombok.Data;
 
 @Data
 public class ColumnSchema {
+    // add original field name
+
     private Class<?> parent;
 
     private Method getter;
@@ -27,7 +29,7 @@ public class ColumnSchema {
 
     private Class javaType;
 
-    private boolean isGeneratedId;
+    private boolean Id;
 
     private boolean isNullable;
 
@@ -37,8 +39,12 @@ public class ColumnSchema {
         final var databaseFieldAnnotation = field.getAnnotation(DatabaseField.class);
         this.columnName = databaseFieldAnnotation.name()
                 .equals("") ? field.getName() : databaseFieldAnnotation.name();
-        this.isGeneratedId = field.getAnnotation(Id.class)
-                .generated();
+        if ( field.isAnnotationPresent(Id.class) ) {
+            this.Id = field.getAnnotation(Id.class)
+                    .generated();
+        } else {
+            this.Id = false;
+        }
         this.isNullable = databaseFieldAnnotation.nullable();
         this.javaType = field.getType();
         this.sqlType = TypeMapper.getSqlType(field.getType());

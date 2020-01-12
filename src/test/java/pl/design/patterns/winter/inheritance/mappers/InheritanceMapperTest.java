@@ -19,7 +19,8 @@ class InheritanceMapperTest {
     @Test
     void concreteTableInheritance() {
         // given
-        InheritanceMapper mapper = new ConcreteTableInheritanceMapper();
+        DatabaseSchema databaseSchema = new DatabaseSchema();
+        InheritanceMapper mapper = new ConcreteTableInheritanceMapper(databaseSchema);
 
         // when
         InheritanceMapping mappingOfClassC = mapper.map(C.class);
@@ -28,13 +29,16 @@ class InheritanceMapperTest {
         // then for C
         assertEquals("C", mappingOfClassC.getTableSchema("stringC")
                 .getTableName());
-        assertEquals(6, mappingOfClassC.getColumnNameToTable()
-                .size());
+        assertEquals("C", mappingOfClassC.getTableSchema("stringB")
+                .getTableName());
+        assertEquals("C", mappingOfClassC.getTableSchema("stringA")
+                .getTableName());
+
         // then for D
+        assertEquals("D", mappingOfClassD.getTableSchema("stringD")
+                .getTableName());
         assertEquals("D", mappingOfClassD.getTableSchema("stringA")
                 .getTableName());
-        assertEquals(4, mappingOfClassD.getColumnNameToTable()
-                .size());
     }
 
     @Test
@@ -50,13 +54,17 @@ class InheritanceMapperTest {
         // then for C
         assertEquals("A", mappingOfClassC.getTableSchema("stringC")
                 .getTableName());
-        assertEquals(8, mappingOfClassC.getColumnNameToTable()
-                .size());
+        assertEquals("A", mappingOfClassC.getTableSchema("stringB")
+                .getTableName());
+        assertEquals("A", mappingOfClassC.getTableSchema("stringA")
+                .getTableName());
+
         // then for D
+        assertEquals("A", mappingOfClassD.getTableSchema("stringD")
+                .getTableName());
         assertEquals("A", mappingOfClassD.getTableSchema("stringA")
                 .getTableName());
-        assertEquals(8, mappingOfClassD.getColumnNameToTable()
-                .size());
+
         assertSame(mappingOfClassC, mappingOfClassD);
     }
 
@@ -78,15 +86,11 @@ class InheritanceMapperTest {
         assertEquals("A", mappingOfClassC.getTableSchema("stringA")
                 .getTableName());
 
-        assertEquals(6, mappingOfClassC.getColumnNameToTable()
-                .size());
         // then for D
         assertEquals("D", mappingOfClassD.getTableSchema("stringD")
                 .getTableName());
         assertEquals("A", mappingOfClassD.getTableSchema("stringA")
                 .getTableName());
-        assertEquals(4, mappingOfClassD.getColumnNameToTable()
-                .size());
     }
 
     @Getter

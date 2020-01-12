@@ -7,10 +7,6 @@ import pl.design.patterns.winter.schemas.TableSchema;
 public class InheritanceMapping {
     private Map<String, TableSchema> columnNameToTable;
 
-    public Map<String, TableSchema> getColumnNameToTable() {
-        return columnNameToTable;
-    }
-
     public InheritanceMapping(Map<String, TableSchema> columnNameToTable) {
         this.columnNameToTable = columnNameToTable;
     }

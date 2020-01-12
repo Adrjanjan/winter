@@ -13,7 +13,7 @@ import pl.design.patterns.winter.schemas.ColumnSchema;
 
 public abstract class InheritanceMapper {
 
-    abstract <T> InheritanceMapping map(Class<T> clazz);
+    public abstract <T> InheritanceMapping map(Class<T> clazz);
 
     List<ColumnSchema> createColumnSchemas(List<Field> fields) {
         return fields.stream()

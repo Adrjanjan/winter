@@ -17,7 +17,7 @@ public class SingleTableInheritanceMapper extends InheritanceMapper {
     }
 
     @Override
-    <T> InheritanceMapping map(Class<T> clazz) {
+    public <T> InheritanceMapping map(Class<T> clazz) {
 
         Class<? super T> superclass = clazz.getSuperclass();
         InheritanceMapping inheritanceMapping;
