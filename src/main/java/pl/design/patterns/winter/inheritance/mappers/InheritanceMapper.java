@@ -1,15 +1,15 @@
 package pl.design.patterns.winter.inheritance.mappers;
 
-import java.lang.reflect.Field;
-import java.util.List;
-import java.util.stream.Collectors;
-
 import pl.design.patterns.winter.annotations.DatabaseField;
 import pl.design.patterns.winter.annotations.DatabaseTable;
 import pl.design.patterns.winter.annotations.Id;
 import pl.design.patterns.winter.exceptions.NoIdFieldException;
 import pl.design.patterns.winter.inheritance.mapping.InheritanceMapping;
 import pl.design.patterns.winter.schemas.ColumnSchema;
+
+import java.lang.reflect.Field;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public abstract class InheritanceMapper {
 
@@ -22,7 +22,7 @@ public abstract class InheritanceMapper {
                 .collect(Collectors.toList());
     }
 
-    <T> ColumnSchema getIdField(List<Field> fields) {
+    ColumnSchema getIdField(List<Field> fields) {
         return fields.stream()
                 .filter(f -> f.isAnnotationPresent(Id.class))
                 .map(ColumnSchema::new)
@@ -30,7 +30,7 @@ public abstract class InheritanceMapper {
                 .orElseThrow(NoIdFieldException::new);
     }
 
-    <T> String resolveTableName(Class<T> clazz) {
+    String resolveTableName(Class<?> clazz) {
         final var name = clazz.getAnnotation(DatabaseTable.class)
                     .name();
         return "".equals(name) ? clazz.getSimpleName() : name;
