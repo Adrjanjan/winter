@@ -1,21 +1,27 @@
 package pl.design.patterns.winter.inheritance.mapping;
 
-import java.util.Map;
-
 import pl.design.patterns.winter.schemas.TableSchema;
 
-public class InheritanceMapping {
-    private Map<String, TableSchema> columnNameToTable;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
-    public InheritanceMapping(Map<String, TableSchema> columnNameToTable) {
-        this.columnNameToTable = columnNameToTable;
+public class InheritanceMapping {
+    private Map<String, TableSchema> fieldNameToTable;
+
+    public InheritanceMapping(Map<String, TableSchema> fieldNameToTable) {
+        this.fieldNameToTable = fieldNameToTable;
     }
 
-    public TableSchema getTableSchema(String columnName) {
-        return columnNameToTable.get(columnName);
+    public List<TableSchema> getAllTableSchemas() {
+        return new ArrayList<>(this.fieldNameToTable.values());
+    }
+
+    public TableSchema getTableSchema(String fieldName) {
+        return fieldNameToTable.get(fieldName);
     }
 
     public void union(Map<String, TableSchema> otherMapping) {
-        this.columnNameToTable.putAll(otherMapping);
+        this.fieldNameToTable.putAll(otherMapping);
     }
 }

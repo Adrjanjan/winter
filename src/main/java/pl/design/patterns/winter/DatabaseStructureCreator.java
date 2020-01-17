@@ -45,6 +45,7 @@ public class DatabaseStructureCreator implements CommandLineRunner {
             databaseSchema.addTableSchemas(mapping.getAllTableSchemas());
 
         }
+        System.out.println();
 
     }
 

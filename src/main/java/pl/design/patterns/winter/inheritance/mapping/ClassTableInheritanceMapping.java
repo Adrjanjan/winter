@@ -1,8 +1,8 @@
 package pl.design.patterns.winter.inheritance.mapping;
 
-import java.util.Map;
-
 import pl.design.patterns.winter.schemas.TableSchema;
+
+import java.util.Map;
 
 public class ClassTableInheritanceMapping extends InheritanceMapping {
     private InheritanceMapping parent;
@@ -13,10 +13,10 @@ public class ClassTableInheritanceMapping extends InheritanceMapping {
     }
 
     @Override
-    public TableSchema getTableSchema(String columnName) {
-        var tableSchema = super.getTableSchema(columnName);
+    public TableSchema getTableSchema(String fieldName) {
+        var tableSchema = super.getTableSchema(fieldName);
         if ( tableSchema == null ) {
-            tableSchema = parent.getTableSchema(columnName);
+            tableSchema = parent.getTableSchema(fieldName);
         }
         return tableSchema;
     }
