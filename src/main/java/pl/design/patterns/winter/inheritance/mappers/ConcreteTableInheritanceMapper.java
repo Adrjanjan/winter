@@ -3,6 +3,7 @@ package pl.design.patterns.winter.inheritance.mappers;
 import pl.design.patterns.winter.inheritance.mapping.InheritanceMapping;
 import pl.design.patterns.winter.schemas.DatabaseSchema;
 import pl.design.patterns.winter.schemas.TableSchema;
+import pl.design.patterns.winter.utils.NameUtils;
 
 import java.lang.reflect.Field;
 import java.util.*;
@@ -37,7 +38,7 @@ public class ConcreteTableInheritanceMapper extends InheritanceMapper {
 
         TableSchema tableSchema = TableSchema.builder()
                 .clazz(clazz)
-                .tableName(resolveTableName(clazz))
+                .tableName(NameUtils.extractTableName(clazz))
                 .columns(columnSchemas)
                 .idField(idField)
                 .build();

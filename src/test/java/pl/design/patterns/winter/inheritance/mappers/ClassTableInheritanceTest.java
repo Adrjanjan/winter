@@ -25,17 +25,17 @@ public class ClassTableInheritanceTest {
         InheritanceMapping mappingOfClassD = mapper.map(D.class);
 
         // then for C
-        assertEquals("C", mappingOfClassC.getTableSchema("stringC")
+        assertEquals("c", mappingOfClassC.getTableSchema("stringC")
                 .getTableName());
-        assertEquals("B", mappingOfClassC.getTableSchema("stringB")
+        assertEquals("b", mappingOfClassC.getTableSchema("stringB")
                 .getTableName());
-        assertEquals("A", mappingOfClassC.getTableSchema("stringA")
+        assertEquals("a", mappingOfClassC.getTableSchema("stringA")
                 .getTableName());
 
         // then for D
-        assertEquals("D", mappingOfClassD.getTableSchema("stringD")
+        assertEquals("d", mappingOfClassD.getTableSchema("stringD")
                 .getTableName());
-        assertEquals("A", mappingOfClassD.getTableSchema("stringA")
+        assertEquals("a", mappingOfClassD.getTableSchema("stringA")
                 .getTableName());
     }
 

@@ -25,17 +25,17 @@ public class ConcreteTableInheritanceTest {
         InheritanceMapping mappingOfClassD = mapper.map(D.class);
 
         // then for C
-        assertEquals("C", mappingOfClassC.getTableSchema("stringC")
+        assertEquals("c", mappingOfClassC.getTableSchema("stringC")
                 .getTableName());
-        assertEquals("C", mappingOfClassC.getTableSchema("stringB")
+        assertEquals("c", mappingOfClassC.getTableSchema("stringB")
                 .getTableName());
-        assertEquals("C", mappingOfClassC.getTableSchema("stringA")
+        assertEquals("c", mappingOfClassC.getTableSchema("stringA")
                 .getTableName());
 
         // then for D
-        assertEquals("D", mappingOfClassD.getTableSchema("stringD")
+        assertEquals("d", mappingOfClassD.getTableSchema("stringD")
                 .getTableName());
-        assertEquals("D", mappingOfClassD.getTableSchema("stringA")
+        assertEquals("d", mappingOfClassD.getTableSchema("stringA")
                 .getTableName());
     }
 

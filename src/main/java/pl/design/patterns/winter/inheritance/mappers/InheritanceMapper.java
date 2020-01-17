@@ -1,7 +1,6 @@
 package pl.design.patterns.winter.inheritance.mappers;
 
 import pl.design.patterns.winter.annotations.DatabaseField;
-import pl.design.patterns.winter.annotations.DatabaseTable;
 import pl.design.patterns.winter.annotations.Id;
 import pl.design.patterns.winter.exceptions.MultipleIdsException;
 import pl.design.patterns.winter.exceptions.NoIdFieldException;
@@ -37,11 +36,5 @@ public abstract class InheritanceMapper {
         else {
             return new ColumnSchema(ids.get(0));
         }
-    }
-
-    String resolveTableName(Class<?> clazz) {
-        final var name = clazz.getAnnotation(DatabaseTable.class)
-                    .name();
-        return "".equals(name) ? clazz.getSimpleName() : name;
     }
 }

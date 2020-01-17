@@ -26,17 +26,17 @@ public class SingleTableInheritanceTest {
         InheritanceMapping mappingOfClassD = mapper.map(D.class);
 
         // then for C
-        assertEquals("A", mappingOfClassC.getTableSchema("stringC")
+        assertEquals("a", mappingOfClassC.getTableSchema("stringC")
                 .getTableName());
-        assertEquals("A", mappingOfClassC.getTableSchema("stringB")
+        assertEquals("a", mappingOfClassC.getTableSchema("stringB")
                 .getTableName());
-        assertEquals("A", mappingOfClassC.getTableSchema("stringA")
+        assertEquals("a", mappingOfClassC.getTableSchema("stringA")
                 .getTableName());
 
         // then for D
-        assertEquals("A", mappingOfClassD.getTableSchema("stringD")
+        assertEquals("a", mappingOfClassD.getTableSchema("stringD")
                 .getTableName());
-        assertEquals("A", mappingOfClassD.getTableSchema("stringA")
+        assertEquals("a", mappingOfClassD.getTableSchema("stringA")
                 .getTableName());
 
         assertSame(mappingOfClassC, mappingOfClassD);

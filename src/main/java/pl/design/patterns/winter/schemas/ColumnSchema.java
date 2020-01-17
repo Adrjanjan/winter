@@ -6,6 +6,7 @@ import pl.design.patterns.winter.annotations.DatabaseField;
 import pl.design.patterns.winter.annotations.Id;
 import pl.design.patterns.winter.exceptions.InvalidIdFieldTypeException;
 import pl.design.patterns.winter.query.TypeMapper;
+import pl.design.patterns.winter.utils.NameUtils;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -36,8 +37,7 @@ public class ColumnSchema {
 
     public ColumnSchema(Field field) {
         final var databaseFieldAnnotation = field.getAnnotation(DatabaseField.class);
-        this.columnName = databaseFieldAnnotation.name()
-                .equals("") ? field.getName() : databaseFieldAnnotation.name();
+        this.columnName = NameUtils.extractColumnName(field);
         if ( field.isAnnotationPresent(Id.class) ) {
             if (field.getType() != int.class) {
                 throw new InvalidIdFieldTypeException();
