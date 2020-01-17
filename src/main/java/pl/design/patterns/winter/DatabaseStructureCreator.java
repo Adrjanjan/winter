@@ -1,20 +1,19 @@
 package pl.design.patterns.winter;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
 import org.springframework.core.type.filter.AnnotationTypeFilter;
 import org.springframework.stereotype.Component;
-
 import pl.design.patterns.winter.annotations.DatabaseTable;
-import pl.design.patterns.winter.dao.Dao;
-import pl.design.patterns.winter.dao.DaoCreator;
+import pl.design.patterns.winter.inheritance.mappers.InheritanceMapper;
+import pl.design.patterns.winter.inheritance.mapping.InheritanceMapping;
 import pl.design.patterns.winter.schemas.DatabaseSchema;
+
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.List;
 
 @Component
 public class DatabaseStructureCreator implements CommandLineRunner {
@@ -22,14 +21,16 @@ public class DatabaseStructureCreator implements CommandLineRunner {
     @Autowired
     private DatabaseSchema databaseSchema;
 
+    private static final String SCAN_PACKAGE_NAME = "pl.design.patterns.winter";
+
     @Override
     public void run(String... args) throws Exception {
         System.out.println("Finding annotated classes using Spring:");
-        new DatabaseStructureCreator().prepareDatabase();
+        prepareDatabase();
     }
 
     public void prepareDatabase() throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
-        List<Class<?>> annotatedClasses = findAnnotatedClasses("pl.design.patterns.winter");
+        List<Class<?>> annotatedClasses = findAnnotatedClasses();
         for (Class<?> clazz : annotatedClasses) {
             // testing purposes only
             printMetadata(clazz);
@@ -37,20 +38,21 @@ public class DatabaseStructureCreator implements CommandLineRunner {
             // 1. for - zrobić mapowania dziedziczenia - zmienia to tabele
             // 2. for - dla każdej tabeli wyciągniętej z
             //
-            DaoCreator.create(clazz);
+
+
+            InheritanceMapper mapper = clazz.getAnnotation(DatabaseTable.class).inheritanceType().getMappingClass().getConstructor(DatabaseSchema.class).newInstance(databaseSchema);
+            InheritanceMapping mapping = mapper.map(clazz);
+            databaseSchema.addTableSchemas(mapping.getAllTableSchemas());
+
         }
 
-        List<Dao<?>> daos = DaoCreator.getAll();
-        for (Dao<?> dao : daos) {
-            dao.createTable();
-        }
     }
 
-    private List<Class<?>> findAnnotatedClasses(String scanPackage) {
+    private List<Class<?>> findAnnotatedClasses() {
         ClassPathScanningCandidateComponentProvider provider = createComponentScanner();
         List<Class<?>> ret = new ArrayList<>();
         try {
-            for (BeanDefinition beanDef : provider.findCandidateComponents(scanPackage)) {
+            for (BeanDefinition beanDef : provider.findCandidateComponents(SCAN_PACKAGE_NAME)) {
                 Class<?> clazz = Class.forName(beanDef.getBeanClassName());
                 ret.add(clazz);
             }
