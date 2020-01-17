@@ -1,17 +1,16 @@
 package pl.design.patterns.winter.schemas;
 
+import lombok.Data;
+import org.springframework.util.StringUtils;
+import pl.design.patterns.winter.annotations.DatabaseField;
+import pl.design.patterns.winter.annotations.Id;
+import pl.design.patterns.winter.exceptions.InvalidIdFieldTypeException;
+import pl.design.patterns.winter.query.TypeMapper;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.sql.SQLType;
-
-import org.springframework.util.StringUtils;
-
-import pl.design.patterns.winter.annotations.DatabaseField;
-import pl.design.patterns.winter.annotations.Id;
-import pl.design.patterns.winter.query.TypeMapper;
-
-import lombok.Data;
 
 @Data
 public class ColumnSchema {
@@ -29,7 +28,7 @@ public class ColumnSchema {
 
     private Class javaType;
 
-    private boolean Id;
+    private boolean isGeneratedId;
 
     private boolean isNullable;
 
@@ -40,10 +39,12 @@ public class ColumnSchema {
         this.columnName = databaseFieldAnnotation.name()
                 .equals("") ? field.getName() : databaseFieldAnnotation.name();
         if ( field.isAnnotationPresent(Id.class) ) {
-            this.Id = field.getAnnotation(Id.class)
-                    .generated();
+            if (field.getType() != int.class) {
+                throw new InvalidIdFieldTypeException();
+            }
+            this.isGeneratedId = field.getAnnotation(Id.class).generated();
         } else {
-            this.Id = false;
+            this.isGeneratedId = false;
         }
         this.isNullable = databaseFieldAnnotation.nullable();
         this.javaType = field.getType();

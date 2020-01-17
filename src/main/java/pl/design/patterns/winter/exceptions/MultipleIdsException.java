@@ -4,4 +4,7 @@ public class MultipleIdsException extends RuntimeException {
     public MultipleIdsException(String s) {
         super(s);
     }
+
+    public MultipleIdsException() {
+    }
 }
