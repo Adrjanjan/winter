@@ -1,5 +1,6 @@
 package pl.design.patterns.winter.statements;
 
+import lombok.extern.apachecommons.CommonsLog;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import pl.design.patterns.winter.query.CreateTableQuery;
@@ -10,6 +11,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+@CommonsLog
 @Component
 public class CreateTableExecutor {
 
@@ -17,30 +19,22 @@ public class CreateTableExecutor {
     private DataSource dataSource;
 
     public void createTable(TableSchema tableSchema) {
+        log.info("Tworze tabele...: " + tableSchema.getTableName());
 
         String query = CreateTableQuery.prepare(tableSchema);
 
-        // System.out.println(query);
+        try (Connection conn = dataSource.getConnection()) {
 
-        Connection conn = null;
-
-        try {
-            conn = dataSource.getConnection();
-
+            // TODO: mozna dodac najpierw sprawdzenie
             Statement stmt = conn.createStatement();
-
             stmt.executeUpdate(query);
-            System.out.println("Utworzono tabele: " + tableSchema.getTableName());
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        } finally {
-            if (conn != null) {
-                try {
-                    conn.close();
-                } catch (SQLException e) {
+            log.info("Tabela utworzona: " + tableSchema.getTableName());
 
-                }
-            }
+        } catch (SQLException e) {
+
+            log.error("Nie udalo sie utworzyc tabeli " + tableSchema.getTableName());
+            throw new RuntimeException(e);
+
         }
 
     }

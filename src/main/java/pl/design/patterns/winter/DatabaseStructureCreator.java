@@ -1,5 +1,6 @@
 package pl.design.patterns.winter;
 
+import lombok.extern.apachecommons.CommonsLog;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.boot.CommandLineRunner;
@@ -16,6 +17,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
+@CommonsLog
 @Component
 public class DatabaseStructureCreator implements CommandLineRunner {
 
@@ -29,15 +31,12 @@ public class DatabaseStructureCreator implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        System.out.println("Finding annotated classes using Spring:");
         prepareDatabase();
     }
 
-    public void prepareDatabase() throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+    private void prepareDatabase() throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
         List<Class<?>> annotatedClasses = findAnnotatedClasses();
         for (Class<?> clazz : annotatedClasses) {
-            // testing purposes only
-            printMetadata(clazz);
 
             InheritanceMapper mapper = clazz.getAnnotation(DatabaseTable.class).inheritanceType().getMappingClass().getConstructor(DatabaseSchema.class).newInstance(databaseSchema);
             InheritanceMapping mapping = mapper.map(clazz);
@@ -49,6 +48,7 @@ public class DatabaseStructureCreator implements CommandLineRunner {
     }
 
     private List<Class<?>> findAnnotatedClasses() {
+        log.info("Szukam klas oznaczonych adnotacja w paczce: " + SCAN_PACKAGE_NAME);
         ClassPathScanningCandidateComponentProvider provider = createComponentScanner();
         List<Class<?>> ret = new ArrayList<>();
         try {
@@ -60,6 +60,7 @@ public class DatabaseStructureCreator implements CommandLineRunner {
             e.printStackTrace();
         }
 
+        log.info(String.format("Znalazlem %d oznaczonych klas", ret.size()));
         return ret;
     }
 
@@ -68,15 +69,4 @@ public class DatabaseStructureCreator implements CommandLineRunner {
         provider.addIncludeFilter(new AnnotationTypeFilter(DatabaseTable.class));
         return provider;
     }
-
-    // method for testing purposes only
-    private void printMetadata(Class<?> cl) {
-        try {
-            DatabaseTable table = cl.getAnnotation(DatabaseTable.class);
-            System.out.printf("Found class: %s, with meta name: %s%n", cl.getSimpleName(), table.name());
-        } catch (Exception e) {
-            System.err.println("Got exception: " + e.getMessage());
-        }
-    }
-
 }
