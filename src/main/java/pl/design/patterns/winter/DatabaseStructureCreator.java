@@ -10,6 +10,7 @@ import pl.design.patterns.winter.annotations.DatabaseTable;
 import pl.design.patterns.winter.inheritance.mappers.InheritanceMapper;
 import pl.design.patterns.winter.inheritance.mapping.InheritanceMapping;
 import pl.design.patterns.winter.schemas.DatabaseSchema;
+import pl.design.patterns.winter.statements.CreateTableExecutor;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -20,6 +21,9 @@ public class DatabaseStructureCreator implements CommandLineRunner {
 
     @Autowired
     private DatabaseSchema databaseSchema;
+
+    @Autowired
+    private CreateTableExecutor executor;
 
     private static final String SCAN_PACKAGE_NAME = "pl.design.patterns.winter";
 
@@ -34,19 +38,14 @@ public class DatabaseStructureCreator implements CommandLineRunner {
         for (Class<?> clazz : annotatedClasses) {
             // testing purposes only
             printMetadata(clazz);
-            // imo tworzenie tabel zostawiłbym już po zrobieniu mapowania dziedziczenia, trzeba by było:
-            // 1. for - zrobić mapowania dziedziczenia - zmienia to tabele
-            // 2. for - dla każdej tabeli wyciągniętej z
-            //
-
 
             InheritanceMapper mapper = clazz.getAnnotation(DatabaseTable.class).inheritanceType().getMappingClass().getConstructor(DatabaseSchema.class).newInstance(databaseSchema);
             InheritanceMapping mapping = mapper.map(clazz);
             databaseSchema.addTableSchemas(mapping.getAllTableSchemas());
 
         }
-        System.out.println();
 
+        databaseSchema.getAllTables().forEach(tableSchema -> executor.createTable(tableSchema));
     }
 
     private List<Class<?>> findAnnotatedClasses() {
