@@ -2,6 +2,7 @@ package pl.design.patterns.winter;
 
 import lombok.extern.apachecommons.CommonsLog;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
@@ -12,6 +13,7 @@ import pl.design.patterns.winter.inheritance.mappers.InheritanceMapper;
 import pl.design.patterns.winter.inheritance.mapping.InheritanceMapping;
 import pl.design.patterns.winter.schemas.DatabaseSchema;
 import pl.design.patterns.winter.statements.CreateTableExecutor;
+import pl.design.patterns.winter.statements.DropTablesExecutor;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -25,9 +27,16 @@ public class DatabaseStructureCreator implements CommandLineRunner {
     private DatabaseSchema databaseSchema;
 
     @Autowired
-    private CreateTableExecutor executor;
+    private CreateTableExecutor createExecutor;
 
-    private static final String SCAN_PACKAGE_NAME = "pl.design.patterns.winter";
+    @Autowired
+    private DropTablesExecutor dropExecutor;
+
+    @Value("${winter.drop-tables}")
+    private boolean dropTables;
+
+    @Value("${winter.scan-package-name}")
+    private String scanPackageName;
 
     @Override
     public void run(String... args) throws Exception {
@@ -44,15 +53,19 @@ public class DatabaseStructureCreator implements CommandLineRunner {
 
         }
 
-        databaseSchema.getAllTables().forEach(tableSchema -> executor.createTable(tableSchema));
+        if (dropTables) {
+            dropExecutor.dropTables();
+        }
+
+        databaseSchema.getAllTables().forEach(tableSchema -> createExecutor.createTable(tableSchema));
     }
 
     private List<Class<?>> findAnnotatedClasses() {
-        log.info("Szukam klas oznaczonych adnotacja w paczce: " + SCAN_PACKAGE_NAME);
+        log.info("Szukam klas oznaczonych adnotacja w paczce: " + scanPackageName);
         ClassPathScanningCandidateComponentProvider provider = createComponentScanner();
         List<Class<?>> ret = new ArrayList<>();
         try {
-            for (BeanDefinition beanDef : provider.findCandidateComponents(SCAN_PACKAGE_NAME)) {
+            for (BeanDefinition beanDef : provider.findCandidateComponents(scanPackageName)) {
                 Class<?> clazz = Class.forName(beanDef.getBeanClassName());
                 ret.add(clazz);
             }
