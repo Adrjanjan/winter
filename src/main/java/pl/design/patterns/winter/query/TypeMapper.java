@@ -1,19 +1,18 @@
 package pl.design.patterns.winter.query;
 
+import com.google.common.collect.HashBiMap;
+
+import javax.lang.model.type.NullType;
 import java.sql.JDBCType;
 import java.sql.Timestamp;
 import java.util.Date;
-
-import javax.lang.model.type.NullType;
-
-import com.google.common.collect.HashBiMap;
 
 public class TypeMapper {
     private static HashBiMap<Class, JDBCType> javaToSqlTypes;
 
     static {
         javaToSqlTypes = HashBiMap.create();
-        javaToSqlTypes.put(Integer.class, JDBCType.INTEGER);
+        javaToSqlTypes.put(int.class, JDBCType.INTEGER);
         javaToSqlTypes.put(String.class, JDBCType.VARCHAR);
         javaToSqlTypes.put(Float.class, JDBCType.FLOAT);
         javaToSqlTypes.put(Double.class, JDBCType.DOUBLE);

@@ -1,12 +1,13 @@
 package pl.design.patterns.winter.inheritance.mappers;
 
-import java.lang.reflect.Field;
-import java.util.*;
-import java.util.stream.Collectors;
-
 import pl.design.patterns.winter.inheritance.mapping.InheritanceMapping;
 import pl.design.patterns.winter.schemas.DatabaseSchema;
 import pl.design.patterns.winter.schemas.TableSchema;
+import pl.design.patterns.winter.utils.NameUtils;
+
+import java.lang.reflect.Field;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class ConcreteTableInheritanceMapper extends InheritanceMapper {
 
@@ -35,9 +36,9 @@ public class ConcreteTableInheritanceMapper extends InheritanceMapper {
 
         final var columnSchemas = createColumnSchemas(fields);
 
-        TableSchema<T> tableSchema = TableSchema.<T> builder()
+        TableSchema tableSchema = TableSchema.builder()
                 .clazz(clazz)
-                .tableName(resolveTableName(clazz))
+                .tableName(NameUtils.extractTableName(clazz))
                 .columns(columnSchemas)
                 .idField(idField)
                 .build();
