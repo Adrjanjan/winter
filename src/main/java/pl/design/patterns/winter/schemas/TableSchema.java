@@ -16,4 +16,8 @@ public class TableSchema {
 
     private ColumnSchema idField;
 
+    public void addColumns(List<ColumnSchema> columnSchemas)
+    {
+        columns.addAll(columnSchemas);
+    }
 }

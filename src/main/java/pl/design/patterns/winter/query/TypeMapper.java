@@ -15,8 +15,8 @@ public class TypeMapper {
         javaToSqlTypes.put(int.class, JDBCType.INTEGER);
         javaToSqlTypes.put(String.class, JDBCType.VARCHAR);
         javaToSqlTypes.put(Float.class, JDBCType.FLOAT);
-        javaToSqlTypes.put(Double.class, JDBCType.DOUBLE);
-        javaToSqlTypes.put(Boolean.class, JDBCType.BOOLEAN);
+        javaToSqlTypes.put(double.class, JDBCType.DOUBLE);
+        javaToSqlTypes.put(boolean.class, JDBCType.BOOLEAN);
         javaToSqlTypes.put(Character.class, JDBCType.CHAR);
         javaToSqlTypes.put(NullType.class, JDBCType.NULL);
         javaToSqlTypes.put(Timestamp.class, JDBCType.TIMESTAMP);
@@ -32,6 +32,11 @@ public class TypeMapper {
     }
 
     public static void addMapping(Class classObject, JDBCType type) {
-        javaToSqlTypes.put(classObject, type);
+        if(classObject.getSuperclass() != Object.class)
+        {
+            javaToSqlTypes.put(classObject.getSuperclass(), type);
+        }
+        else
+            javaToSqlTypes.put(classObject, type);
     }
 }
