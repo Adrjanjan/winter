@@ -21,9 +21,9 @@ public class SelectExecutor {
     @Autowired
     private DataSource dataSource;
 
-    public ResultSet findById(int id, InheritanceMapping inheritanceMapping)
+    public <T> ResultSet findById(int id, Class<T> clazz, InheritanceMapping inheritanceMapping)
     {
-        String query = SelectQuery.prepareFindById(id, Integer.class, inheritanceMapping);
+        String query = SelectQuery.prepareFindById(id, clazz, inheritanceMapping);
 
         try (Connection conn = dataSource.getConnection()) {
 
