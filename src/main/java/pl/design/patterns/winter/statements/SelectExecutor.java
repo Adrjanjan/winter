@@ -28,17 +28,30 @@ public class SelectExecutor {
 
             Statement stmt = conn.createStatement();
             // executeQuery zwraca ResultSet
-            log.info("Wykonuje select findAById("+id+")");
+            log.info("Wykonuje select findById("+id+")");
             return stmt.executeQuery(query);
 
         } catch (SQLException e) {
 
-            log.error("Nie udalo sie wykonać selecta findAById("+id+")");
+            log.error("Nie udalo sie wykonać selecta findById("+id+")");
             throw new RuntimeException(e);
         }
     }
 
-//    public <T> ResultSet findAll(Class<T> clazz, InheritanceMapping inheritanceMapping){
-//
-//    }
+    public <T> ResultSet findAll(Class<T> clazz, InheritanceMapping inheritanceMapping){
+        String query = SelectQuery.prepareFindAll( clazz, inheritanceMapping);
+
+        try (Connection conn = dataSource.getConnection()) {
+
+            Statement stmt = conn.createStatement();
+            // executeQuery zwraca ResultSet
+            log.info("Wykonuje select findAll");
+            return stmt.executeQuery(query);
+
+        } catch (SQLException e) {
+
+            log.error("Nie udalo sie wykonać selecta findAll");
+            throw new RuntimeException(e);
+        }
+    }
 }
