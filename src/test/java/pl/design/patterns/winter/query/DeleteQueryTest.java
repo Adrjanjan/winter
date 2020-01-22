@@ -14,35 +14,62 @@ import pl.design.patterns.winter.schemas.DatabaseSchema;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class SelectQueryTest {
+public class DeleteQueryTest {
 
     @Test
-    void prepareFindById()
-    {
+    void prepareDelete() {
         // given
         DatabaseSchema databaseSchema = new DatabaseSchema();
         InheritanceMapper mapper = new ClassTableInheritanceMapper(databaseSchema);
 
         // when
-        InheritanceMapping mappingOfSelectQueryTestClass = mapper.map(SelectQueryTestClass.class);
+        InheritanceMapping mappingOfDeleteQueryC = mapper.map(C.class);
+        InheritanceMapping mappingOfDeleteQueryB = mapper.map(B.class);
 
-        //then
-        assertEquals("SELECT * FROM select_query_test_class WHERE param1_int = 12;", SelectQuery.prepareFindById(12,SelectQueryTestClass.class,mappingOfSelectQueryTestClass));
+        assertEquals("DELETE FROM b WHERE b_int = 12; DELETE FROM a  WHERE a_int = 12;", DeleteQuery.prepareDelete(12, B.class,mappingOfDeleteQueryB));
+        assertEquals("DELETE FROM c WHERE c_int = 100;", DeleteQuery.prepareDelete(100, C.class,mappingOfDeleteQueryC));
 
     }
 
     @Getter
     @Setter
     @DatabaseTable(inheritanceType = InheritanceMappingType.CLASS_TABLE)
-    class SelectQueryTestClass{
+    class A{
         @Id
         @DatabaseField
-        public int param1Int;
+        public int AInt;
 
         @DatabaseField
-        public String param2String;
+        public String AString;
 
         @DatabaseField
-        public double param3Double;
+        public double ADouble;
     }
+
+    @Getter
+    @Setter
+    @DatabaseTable(inheritanceType = InheritanceMappingType.CLASS_TABLE)
+    class B extends A{
+        @Id
+        @DatabaseField
+        public int BInt;
+
+        @DatabaseField
+        public String BString;
+
+    }
+
+    @Getter
+    @Setter
+    @DatabaseTable(inheritanceType = InheritanceMappingType.CLASS_TABLE)
+    class C {
+        @Id
+        @DatabaseField
+        public int CInt;
+
+        @DatabaseField
+        public float CFloat;
+
+    }
+
 }
