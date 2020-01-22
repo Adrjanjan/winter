@@ -1,6 +1,5 @@
 package pl.design.patterns.winter.statements;
 
-
 import lombok.extern.apachecommons.CommonsLog;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -20,19 +19,18 @@ public class SelectExecutor {
     @Autowired
     private DataSource dataSource;
 
-    public <T> ResultSet findById(int id, Class<T> clazz, InheritanceMapping inheritanceMapping)
+    public ResultSet findById(int id, Class<?> clazz, InheritanceMapping inheritanceMapping)
     {
         String query = SelectQuery.prepareFindById(id, clazz, inheritanceMapping);
 
         try (Connection conn = dataSource.getConnection()) {
 
             Statement stmt = conn.createStatement();
-            // executeQuery zwraca ResultSet
-            log.info("Wykonuje select findById("+id+")");
-            return stmt.executeQuery(query);
+            stmt.executeUpdate(query);
+            log.info("Wykonano select findById("+id+")");
+            return stmt.getResultSet();
 
         } catch (SQLException e) {
-
             log.error("Nie udalo sie wykonać selecta findById("+id+")");
             throw new RuntimeException(e);
         }
@@ -42,14 +40,11 @@ public class SelectExecutor {
         String query = SelectQuery.prepareFindAll( clazz, inheritanceMapping);
 
         try (Connection conn = dataSource.getConnection()) {
-
             Statement stmt = conn.createStatement();
             // executeQuery zwraca ResultSet
             log.info("Wykonuje select findAll");
             return stmt.executeQuery(query);
-
         } catch (SQLException e) {
-
             log.error("Nie udalo sie wykonać selecta findAll");
             throw new RuntimeException(e);
         }
