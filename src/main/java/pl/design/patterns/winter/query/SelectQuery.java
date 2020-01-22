@@ -1,11 +1,6 @@
 package pl.design.patterns.winter.query;
 
-import lombok.Getter;
-import lombok.Setter;
-import pl.design.patterns.winter.annotations.DatabaseField;
-import pl.design.patterns.winter.annotations.DatabaseTable;
 import pl.design.patterns.winter.annotations.Id;
-import pl.design.patterns.winter.inheritance.InheritanceMappingType;
 import pl.design.patterns.winter.inheritance.mapping.InheritanceMapping;
 
 import java.lang.reflect.Field;
@@ -18,7 +13,6 @@ public class SelectQuery {
         StringBuilder sb = new StringBuilder();
         sb.append("SELECT * FROM ");
 
-        Field[] allFields = clazz.getDeclaredFields();
         // z wszystkich pol klasy wybieram tylko te (tylko to jedno) ktore ma adnotacje @Id
         Field fieldWithId = Arrays.asList(clazz.getDeclaredFields()).stream().filter(
                 field -> field.getAnnotationsByType(Id.class) != null
