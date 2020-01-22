@@ -10,6 +10,7 @@ import pl.design.patterns.winter.inheritance.InheritanceMappingType;
 @Getter
 @Setter
 @DatabaseTable(inheritanceType = InheritanceMappingType.CONCRETE_TABLE)
+//Klasa do testowania
 class B extends A {
     @Id
     @DatabaseField
