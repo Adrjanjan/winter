@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import pl.design.patterns.winter.inheritance.mapping.InheritanceMapping;
 import pl.design.patterns.winter.query.SelectQuery;
-import pl.design.patterns.winter.schemas.TableSchema;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -37,6 +36,9 @@ public class SelectExecutor {
             log.error("Nie udalo sie wykonać selecta findAById("+id+")");
             throw new RuntimeException(e);
         }
-
     }
+
+//    public <T> ResultSet findAll(Class<T> clazz, InheritanceMapping inheritanceMapping){
+//
+//    }
 }

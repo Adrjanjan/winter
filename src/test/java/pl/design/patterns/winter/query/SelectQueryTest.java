@@ -8,7 +8,6 @@ import pl.design.patterns.winter.annotations.DatabaseTable;
 import pl.design.patterns.winter.annotations.Id;
 import pl.design.patterns.winter.inheritance.InheritanceMappingType;
 import pl.design.patterns.winter.inheritance.mappers.ClassTableInheritanceMapper;
-import pl.design.patterns.winter.inheritance.mappers.ClassTableInheritanceTest;
 import pl.design.patterns.winter.inheritance.mappers.InheritanceMapper;
 import pl.design.patterns.winter.inheritance.mapping.InheritanceMapping;
 import pl.design.patterns.winter.schemas.DatabaseSchema;
@@ -26,10 +25,9 @@ public class SelectQueryTest {
 
         // when
         InheritanceMapping mappingOfSelectQueryTestClass = mapper.map(selectQueryTestClass.class);
-        SelectQuery selectQuery = new SelectQuery();
 
         //then
-        assertEquals("SELECT * FROM select_query_test_class WHERE param1Int = 12;", selectQuery.prepareFindById(12,selectQueryTestClass.class,mappingOfSelectQueryTestClass));
+        assertEquals("SELECT * FROM select_query_test_class WHERE param1_int = 12;", SelectQuery.prepareFindById(12,selectQueryTestClass.class,mappingOfSelectQueryTestClass));
 
     }
 
