@@ -4,11 +4,9 @@ import lombok.extern.apachecommons.CommonsLog;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import pl.design.patterns.winter.inheritance.mapping.InheritanceMapping;
-import pl.design.patterns.winter.query.DeleteQuery;
 import pl.design.patterns.winter.query.UpdateQuery;
 
 import javax.sql.DataSource;
-import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -26,7 +24,7 @@ public class UpdateExecutor {
         this.inheritanceMapping = inheritanceMapping;
     }
 
-    public <T> ResultSet update(T objectToUpdate, Class<T> clazz, InheritanceMapping inheritanceMapping) throws InvocationTargetException, IllegalAccessException {
+    public <T> ResultSet update(T objectToUpdate, Class<T> clazz) {
         String query = UpdateQuery.prepareUpdate(objectToUpdate, clazz, inheritanceMapping);
 
         try (Connection conn = dataSource.getConnection()) {

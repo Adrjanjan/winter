@@ -25,7 +25,7 @@ public class SelectExecutor {
         this.inheritanceMapping = inheritanceMapping;
     }
 
-    public ResultSet findById(int id, Class<?> clazz, InheritanceMapping inheritanceMapping) {
+    public ResultSet findById(int id, Class<?> clazz) {
         String query = SelectQuery.prepareFindById(id, clazz, inheritanceMapping);
 
         try (Connection conn = dataSource.getConnection()) {
@@ -41,8 +41,8 @@ public class SelectExecutor {
         }
     }
 
-    public <T> ResultSet findAll(Class<T> clazz, InheritanceMapping inheritanceMapping){
-        String query = SelectQuery.prepareFindAll( clazz, inheritanceMapping);
+    public ResultSet findAll(Class<?> clazz) {
+        String query = SelectQuery.prepareFindAll(clazz, inheritanceMapping);
 
         try (Connection conn = dataSource.getConnection()) {
             Statement stmt = conn.createStatement();

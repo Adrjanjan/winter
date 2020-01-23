@@ -25,7 +25,7 @@ public class DeleteExecutor {
         this.inheritanceMapping = inheritanceMapping;
     }
 
-    public <T> ResultSet delete(int id, Class<T> clazz, InheritanceMapping inheritanceMapping) {
+    public ResultSet delete(int id, Class<?> clazz) {
         String query = DeleteQuery.prepareDelete(id, clazz, inheritanceMapping);
 
         try (Connection conn = dataSource.getConnection()) {

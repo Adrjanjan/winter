@@ -7,15 +7,12 @@ import pl.design.patterns.winter.schemas.ColumnSchema;
 import pl.design.patterns.winter.schemas.TableSchema;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.security.AccessController;
-import java.security.PrivilegedExceptionAction;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
 //UPDATE tabela SET (pole1,pole2,...) = (wartosc1,wartosc2,...) WHERE <rownosc id>;
 public class UpdateQuery {
-    public static <T> String prepareUpdate(T objectToUpdate, Class<T> clazz, InheritanceMapping inheritanceMapping) throws InvocationTargetException, IllegalAccessException {
+    public static <T> String prepareUpdate(T objectToUpdate, Class<T> clazz, InheritanceMapping inheritanceMapping) {
         //Class clazz = objectToUpdate.getClass();
         StringBuilder sb = new StringBuilder();
         sb.append("UPDATE ");
