@@ -1,128 +1,105 @@
 package pl.design.patterns.winter.inheritance.mappers;
 
-import lombok.Getter;
-import lombok.Setter;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import java.lang.reflect.InvocationTargetException;
+
 import org.junit.Assert;
 import org.junit.jupiter.api.Test;
-import pl.design.patterns.winter.annotations.DatabaseField;
-import pl.design.patterns.winter.annotations.DatabaseTable;
-import pl.design.patterns.winter.annotations.Id;
-import pl.design.patterns.winter.inheritance.InheritanceMappingType;
+
+import pl.design.patterns.winter.domain.concretetable.ConcreteB;
+import pl.design.patterns.winter.domain.concretetable.ConcreteC;
+import pl.design.patterns.winter.domain.concretetable.ConcreteD;
 import pl.design.patterns.winter.inheritance.mapping.InheritanceMapping;
 import pl.design.patterns.winter.query.InsertQueryBuilder;
 import pl.design.patterns.winter.schemas.DatabaseSchema;
 
-import java.lang.reflect.InvocationTargetException;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-public class ConcreteTableInheritanceTest {
+class ConcreteTableInheritanceTest {
 
     @Test
-    void concreteTableInheritance() {
+    void concreteTableInheritance_checkMappingsCorrectness() {
         // given
         DatabaseSchema databaseSchema = new DatabaseSchema();
         InheritanceMapper mapper = new ConcreteTableInheritanceMapper(databaseSchema);
 
         // when
-        InheritanceMapping mappingOfClassC = mapper.map(C.class);
-        InheritanceMapping mappingOfClassD = mapper.map(D.class);
+        InheritanceMapping mappingOfClassC = mapper.map(ConcreteC.class);
+        InheritanceMapping mappingOfClassD = mapper.map(ConcreteD.class);
 
         // then for C
-        assertEquals("c", mappingOfClassC.getTableSchema("stringC")
+        assertEquals("concrete_c", mappingOfClassC.getTableSchema("stringC")
                 .getTableName());
-        assertEquals("c", mappingOfClassC.getTableSchema("stringB")
+        assertEquals("concrete_c", mappingOfClassC.getTableSchema("stringB")
                 .getTableName());
-        assertEquals("c", mappingOfClassC.getTableSchema("stringA")
+        assertEquals("concrete_c", mappingOfClassC.getTableSchema("stringA")
                 .getTableName());
 
         // then for D
-        assertEquals("d", mappingOfClassD.getTableSchema("stringD")
+        assertEquals("concrete_d", mappingOfClassD.getTableSchema("stringD")
                 .getTableName());
-        assertEquals("d", mappingOfClassD.getTableSchema("stringA")
+        assertEquals("concrete_d", mappingOfClassD.getTableSchema("stringA")
                 .getTableName());
     }
 
     @Test
-    void insertQuery() throws InvocationTargetException, IllegalAccessException {
+    void insertQueryForClassConcreteB() throws InvocationTargetException, IllegalAccessException {
         // given
         DatabaseSchema databaseSchema = new DatabaseSchema();
         InheritanceMapper mapper = new ConcreteTableInheritanceMapper(databaseSchema);
-        InsertQueryBuilder insertQueryBuilder = new InsertQueryBuilder(mapper.map(B.class));
+        InsertQueryBuilder insertQueryBuilder = new InsertQueryBuilder(mapper.map(ConcreteB.class));
 
         // when
-        var b= new B();
+        var b = new ConcreteB();
         b.setIntB(2);
         b.setStringB("B");
-        b.setBooleanB(false);
-        b.setIntA(1);
         b.setStringA("A");
-        b.setDoubleA(1.1);
+        b.setIntA(1);
 
         var sql = insertQueryBuilder.prepare(b);
 
-        //then
-        Assert.assertEquals("", sql,
-                "INSERT INTO b (int_b, string_b, boolean_b, string_a, int_a, double_a ) VALUES ( 2, \"B\", false, \"A\", 1, 1.1 ); ");
+        // then
+        Assert.assertEquals("INSERT INTO concrete_b ( int_b, string_b, int_a, string_a ) VALUES ( 2, \"B\", 1, \"A\" ); ", sql);
     }
 
-    @Getter
-    @Setter
-    @DatabaseTable(inheritanceType = InheritanceMappingType.CONCRETE_TABLE)
-    public class A {
-        @DatabaseField
-        public String stringA;
+    @Test
+    void insertQueryForClassConcreteC() throws InvocationTargetException, IllegalAccessException {
+        // given
+        DatabaseSchema databaseSchema = new DatabaseSchema();
+        InheritanceMapper mapper = new ConcreteTableInheritanceMapper(databaseSchema);
+        InsertQueryBuilder insertQueryBuilder = new InsertQueryBuilder(mapper.map(ConcreteC.class));
 
-        @Id
-        @DatabaseField
-        private int intA;
+        // when
+        var c = new ConcreteC();
+        c.setIntC(3);
+        c.setStringC("C");
+        c.setIntB(2);
+        c.setStringB("B");
+        c.setIntA(1);
+        c.setStringA("A");
 
-        @DatabaseField
-        private double doubleA;
+        var sql = insertQueryBuilder.prepare(c);
+
+        // then
+        Assert.assertEquals("INSERT INTO concrete_c ( int_c, string_c, int_b, string_b, int_a, string_a ) VALUES ( 3, \"C\", 2, \"B\", 1, \"A\" ); ", sql);
     }
 
-    @Getter
-    @Setter
-    @DatabaseTable(inheritanceType = InheritanceMappingType.CONCRETE_TABLE)
-    public class B extends A {
-        @Id
-        @DatabaseField
-        protected int intB;
+    @Test
+    void insertQueryForClassConcreteD() throws InvocationTargetException, IllegalAccessException {
+        // given
+        DatabaseSchema databaseSchema = new DatabaseSchema();
+        InheritanceMapper mapper = new ConcreteTableInheritanceMapper(databaseSchema);
+        InsertQueryBuilder insertQueryBuilder = new InsertQueryBuilder(mapper.map(ConcreteD.class));
 
-        @DatabaseField
-        String stringB;
+        // when
+        var d = new ConcreteD();
+        d.setIntD(4);
+        d.setStringD("D");
+        d.setIntA(1);
+        d.setStringA("A");
 
-        @DatabaseField
-        private boolean booleanB;
+        var sql = insertQueryBuilder.prepare(d);
 
-        public boolean getBooleanB() {
-            return booleanB;
-        }
+        // then
+        Assert.assertEquals("INSERT INTO concrete_d ( int_d, string_d, int_a, string_a ) VALUES ( 4, \"D\", 1, \"A\" ); ", sql);
     }
-
-    @Getter
-    @Setter
-    @DatabaseTable(inheritanceType = InheritanceMappingType.CONCRETE_TABLE)
-    class C extends B {
-        @DatabaseField
-        protected String stringC;
-
-        @Id
-        @DatabaseField
-        private int intC;
-    }
-
-    @Getter
-    @Setter
-    @DatabaseTable(inheritanceType = InheritanceMappingType.CONCRETE_TABLE)
-    class D extends A {
-        @Id
-        @DatabaseField
-        int intD;
-
-        @DatabaseField
-        String stringD;
-    }
-
-
 }

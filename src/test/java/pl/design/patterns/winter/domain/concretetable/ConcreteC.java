@@ -1,20 +1,19 @@
-package pl.design.patterns.winter.domain.abcd;
+package pl.design.patterns.winter.domain.concretetable;
+
+import pl.design.patterns.winter.annotations.DatabaseField;
+import pl.design.patterns.winter.annotations.DatabaseTable;
+import pl.design.patterns.winter.inheritance.InheritanceMappingType;
 
 import lombok.Getter;
 import lombok.Setter;
-import pl.design.patterns.winter.annotations.DatabaseField;
-import pl.design.patterns.winter.annotations.DatabaseTable;
-import pl.design.patterns.winter.annotations.Id;
-import pl.design.patterns.winter.inheritance.InheritanceMappingType;
 
 @Getter
 @Setter
 @DatabaseTable(inheritanceType = InheritanceMappingType.CONCRETE_TABLE)
-class A {
+public class ConcreteC extends ConcreteB {
     @DatabaseField
-    public String stringA;
+    private int intC;
 
-    @Id
     @DatabaseField
-    private int intA;
+    protected String stringC;
 }
