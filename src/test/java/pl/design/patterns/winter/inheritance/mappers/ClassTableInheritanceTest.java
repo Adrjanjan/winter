@@ -13,9 +13,10 @@ import pl.design.patterns.winter.domain.classtable.ClassC;
 import pl.design.patterns.winter.domain.classtable.ClassD;
 import pl.design.patterns.winter.inheritance.mapping.InheritanceMapping;
 import pl.design.patterns.winter.query.InsertQueryBuilder;
+import pl.design.patterns.winter.query.QueryBuildDirector;
 import pl.design.patterns.winter.schemas.DatabaseSchema;
 
-public class ClassTableInheritanceTest {
+public class ClassTableInheritanceTest<T> {
 
     @Test
     void classTableInheritance_checkMappingsCorrectness() {
@@ -55,7 +56,10 @@ public class ClassTableInheritanceTest {
         b.setStringB("B");
         b.setIntA(1);
         b.setStringA("A");
-        var sql = insertQueryBuilder.prepare(b);
+
+        QueryBuildDirector<T> queryBuildDirector = new QueryBuildDirector<>(insertQueryBuilder);
+        String sql = queryBuildDirector.withObject((T) b)
+                .build();
 
         // then
         Assert.assertThat(sql, containsString("INSERT INTO class_a ( string_a, int_a ) VALUES ( \"A\", 1 );"));
@@ -77,7 +81,10 @@ public class ClassTableInheritanceTest {
         c.setStringB("B");
         c.setIntA(1);
         c.setStringA("A");
-        var sql = insertQueryBuilder.prepare(c);
+
+        QueryBuildDirector<T> queryBuildDirector = new QueryBuildDirector<>(insertQueryBuilder);
+        String sql = queryBuildDirector.withObject((T) c)
+                .build();
 
         // then
         Assert.assertThat(sql, containsString("INSERT INTO class_a ( string_a, int_a ) VALUES ( \"A\", 1 );"));
@@ -98,10 +105,49 @@ public class ClassTableInheritanceTest {
         d.setStringD("D");
         d.setIntA(1);
         d.setStringA("A");
-        var sql = insertQueryBuilder.prepare(d);
 
-        // then
-        Assert.assertThat(sql, containsString("INSERT INTO class_a ( string_a, int_a ) VALUES ( \"A\", 1 );"));
-        Assert.assertThat(sql, containsString("INSERT INTO class_d ( string_d, int_d, int_a ) VALUES ( \"D\", 4, 1 );"));
+        QueryBuildDirector<T> queryBuildDirector = new QueryBuildDirector<>(insertQueryBuilder);
+        String sql = queryBuildDirector.withObject((T) d)
+                .build();
+
+        //then
+        Assert.assertEquals("", sql,
+                "INSERT INTO b (int_b, string_b ) VALUES ( 2, \"B\" ); INSERT INTO a (string_a, int_a ) VALUES ( \"A\", 1 ); ");
+    }
+
+    @Getter
+    @Setter
+    @DatabaseTable(inheritanceType = InheritanceMappingType.CLASS_TABLE)
+    public class A {
+        @DatabaseField
+        public String stringA;
+
+        @Id
+        @DatabaseField
+        private int intA;
+    }
+
+    @Getter
+    @Setter
+    @DatabaseTable(inheritanceType = InheritanceMappingType.CLASS_TABLE)
+    public class B extends A {
+        @Id
+        @DatabaseField
+        protected int intB;
+
+        @DatabaseField
+        String stringB;
+    }
+
+    @Getter
+    @Setter
+    @DatabaseTable(inheritanceType = InheritanceMappingType.CLASS_TABLE)
+    class C extends B {
+        @DatabaseField
+        protected String stringC;
+
+        @Id
+        @DatabaseField
+        private int intC;
     }
 }
