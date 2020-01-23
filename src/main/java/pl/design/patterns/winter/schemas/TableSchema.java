@@ -1,6 +1,7 @@
 package pl.design.patterns.winter.schemas;
 
-import java.util.List;
+import java.util.Collection;
+import java.util.Set;
 
 import lombok.Builder;
 import lombok.Data;
@@ -12,11 +13,11 @@ public class TableSchema {
 
     private String tableName;
 
-    private List<ColumnSchema> columns;
+    private Set<ColumnSchema> columns;
 
     private ColumnSchema idField;
 
-    public void addColumns(List<ColumnSchema> columnSchemas) {
+    public void addColumns(Collection<ColumnSchema> columnSchemas) {
         columns.addAll(columnSchemas);
     }
 }

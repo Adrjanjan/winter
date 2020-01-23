@@ -14,7 +14,6 @@ import org.springframework.stereotype.Component;
 
 import pl.design.patterns.winter.annotations.DatabaseTable;
 import pl.design.patterns.winter.inheritance.mappers.InheritanceMapper;
-import pl.design.patterns.winter.inheritance.mapping.InheritanceMapping;
 import pl.design.patterns.winter.schemas.DatabaseSchema;
 import pl.design.patterns.winter.statements.CreateTableExecutor;
 import pl.design.patterns.winter.statements.DropTablesExecutor;
@@ -48,15 +47,17 @@ public class DatabaseStructureCreator implements CommandLineRunner {
     private void prepareDatabase() throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
         List<Class<?>> annotatedClasses = findAnnotatedClasses();
         for (Class<?> clazz : annotatedClasses) {
-
             InheritanceMapper mapper = clazz.getAnnotation(DatabaseTable.class)
                     .inheritanceType()
                     .getMappingClass()
                     .getConstructor(DatabaseSchema.class)
                     .newInstance(databaseSchema);
-            InheritanceMapping mapping = mapper.map(clazz);
-            databaseSchema.addTableSchemas(mapping.getAllTableSchemas());
+            mapper.map(clazz);
+        }
 
+        for (Class<?> clazz : annotatedClasses) {
+            databaseSchema.addTableSchemas(databaseSchema.getMapping(clazz)
+                    .getAllTableSchemas());
         }
 
         if ( dropTables ) {
