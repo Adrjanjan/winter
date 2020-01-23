@@ -12,9 +12,11 @@ import pl.design.patterns.winter.domain.concretetable.ConcreteC;
 import pl.design.patterns.winter.domain.concretetable.ConcreteD;
 import pl.design.patterns.winter.inheritance.mapping.InheritanceMapping;
 import pl.design.patterns.winter.query.InsertQueryBuilder;
+import pl.design.patterns.winter.query.QueryBuildDirector;
+import pl.design.patterns.winter.query.QueryBuilder;
 import pl.design.patterns.winter.schemas.DatabaseSchema;
 
-class ConcreteTableInheritanceTest {
+class ConcreteTableInheritanceTest<T> {
 
     @Test
     void concreteTableInheritance_checkMappingsCorrectness() {
@@ -55,12 +57,9 @@ class ConcreteTableInheritanceTest {
         b.setStringA("A");
         b.setIntA(1);
 
-        var sql = insertQueryBuilder.setObject(b)
-                .createOperation()
-                .setTable()
-                .setFields()
-                .setValues()
-                .generate();
+        QueryBuildDirector<T> queryBuildDirector = new QueryBuildDirector<>(insertQueryBuilder);
+        String sql = queryBuildDirector.withObject((T) b)
+                .build();
 
         // then
         Assert.assertEquals("INSERT INTO concrete_b ( int_b, string_b, int_a, string_a ) VALUES ( 2, \"B\", 1, \"A\" ); ", sql);
@@ -82,12 +81,9 @@ class ConcreteTableInheritanceTest {
         c.setIntA(1);
         c.setStringA("A");
 
-        var sql = insertQueryBuilder.setObject(c)
-                .createOperation()
-                .setTable()
-                .setFields()
-                .setValues()
-                .generate();
+        QueryBuildDirector<T> queryBuildDirector = new QueryBuildDirector<>(insertQueryBuilder);
+        String sql = queryBuildDirector.withObject((T) c)
+                .build();
 
         // then
         Assert.assertEquals("INSERT INTO concrete_c ( int_c, string_c, int_b, string_b, int_a, string_a ) VALUES ( 3, \"C\", 2, \"B\", 1, \"A\" ); ", sql);
@@ -107,12 +103,9 @@ class ConcreteTableInheritanceTest {
         d.setIntA(1);
         d.setStringA("A");
 
-        var sql = insertQueryBuilder.setObject(d)
-                .createOperation()
-                .setTable()
-                .setFields()
-                .setValues()
-                .generate();
+        QueryBuildDirector<T> queryBuildDirector = new QueryBuildDirector<>(insertQueryBuilder);
+        String sql = queryBuildDirector.withObject((T) d)
+                .build();
 
         // then
         Assert.assertEquals("INSERT INTO concrete_d ( int_d, string_d, int_a, string_a ) VALUES ( 4, \"D\", 1, \"A\" ); ", sql);
