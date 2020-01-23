@@ -1,11 +1,12 @@
 package pl.design.patterns.winter.query;
 
-import com.google.common.collect.HashBiMap;
-
-import javax.lang.model.type.NullType;
 import java.sql.JDBCType;
 import java.sql.Timestamp;
 import java.util.Date;
+
+import javax.lang.model.type.NullType;
+
+import com.google.common.collect.HashBiMap;
 
 public class TypeMapper {
     private static HashBiMap<Class, JDBCType> javaToSqlTypes;
@@ -28,15 +29,14 @@ public class TypeMapper {
     }
 
     public static Class getJavaType(JDBCType type) {
-        return javaToSqlTypes.inverse().get(type);
+        return javaToSqlTypes.inverse()
+                .get(type);
     }
 
     public static void addMapping(Class classObject, JDBCType type) {
-        if(classObject.getSuperclass() != Object.class)
-        {
+        if ( classObject.getSuperclass() != Object.class ) {
             javaToSqlTypes.put(classObject.getSuperclass(), type);
-        }
-        else
+        } else
             javaToSqlTypes.put(classObject, type);
     }
 }

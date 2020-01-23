@@ -21,7 +21,6 @@ public class ConcreteTableInheritanceMapper extends InheritanceMapper {
     public <T> InheritanceMapping map(Class<T> clazz) {
 
         List<Field> fields = new ArrayList<>(Arrays.asList(clazz.getDeclaredFields()));
-        final var idField = getIdField(fields);
 
         Class<? super T> superclass = clazz.getSuperclass();
 
@@ -34,6 +33,7 @@ public class ConcreteTableInheritanceMapper extends InheritanceMapper {
                         .startsWith("this"))
                 .collect(Collectors.toList());
 
+        final var idField = getIdField(fields);
         final var columnSchemas = createColumnSchemas(fields);
 
         TableSchema tableSchema = TableSchema.builder()
