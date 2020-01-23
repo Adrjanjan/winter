@@ -12,9 +12,10 @@ import lombok.Setter;
 @Setter
 @DatabaseTable(inheritanceType = InheritanceMappingType.CONCRETE_TABLE)
 public class ConcreteA {
-    @DatabaseField
-    protected String stringA;
     @Id
     @DatabaseField
     private int intA;
+
+    @DatabaseField
+    protected String stringA;
 }

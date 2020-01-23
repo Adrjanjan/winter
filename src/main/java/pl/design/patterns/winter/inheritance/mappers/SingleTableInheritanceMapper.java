@@ -1,13 +1,13 @@
 package pl.design.patterns.winter.inheritance.mappers;
 
+import java.lang.reflect.Field;
+import java.util.*;
+import java.util.stream.Collectors;
+
 import pl.design.patterns.winter.inheritance.mapping.InheritanceMapping;
 import pl.design.patterns.winter.schemas.DatabaseSchema;
 import pl.design.patterns.winter.schemas.TableSchema;
 import pl.design.patterns.winter.utils.NameUtils;
-
-import java.lang.reflect.Field;
-import java.util.*;
-import java.util.stream.Collectors;
 
 public class SingleTableInheritanceMapper extends InheritanceMapper {
 
@@ -41,8 +41,7 @@ public class SingleTableInheritanceMapper extends InheritanceMapper {
                     .map(Field::getName)
                     .forEach(name -> mapping.put(name, tableSchema));
 
-            return new InheritanceMapping(mapping);
-
+            return databaseSchema.addMapping(clazz, new InheritanceMapping(mapping));
         } else {
             inheritanceMapping = databaseSchema.getMapping(superclass);
             if ( inheritanceMapping == null ) {
@@ -64,7 +63,7 @@ public class SingleTableInheritanceMapper extends InheritanceMapper {
                     .forEach(name -> mapping.put(name, tableSchema));
 
             inheritanceMapping.union(mapping);
-            return inheritanceMapping;
+            return databaseSchema.addMapping(clazz, inheritanceMapping);
         }
     }
 

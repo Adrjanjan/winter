@@ -46,7 +46,7 @@ public class ClassTableInheritanceMapper extends InheritanceMapper {
         }
         ColumnSchema rootIdField = getIdField(Arrays.asList(root.getDeclaredFields()));
 
-        List<ColumnSchema> columnSchemas = createColumnSchemas(fields);
+        Set<ColumnSchema> columnSchemas = createColumnSchemas(fields);
         if ( !columnSchemas.contains(rootIdField) ) {
             columnSchemas.add(rootIdField);
         }
