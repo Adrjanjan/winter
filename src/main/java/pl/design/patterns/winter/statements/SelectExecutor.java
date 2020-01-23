@@ -19,15 +19,20 @@ public class SelectExecutor {
     @Autowired
     private DataSource dataSource;
 
-    public ResultSet findById(int id, Class<?> clazz, InheritanceMapping inheritanceMapping)
-    {
+    private InheritanceMapping inheritanceMapping;
+
+    public void setInheritanceMapping(InheritanceMapping inheritanceMapping) {
+        this.inheritanceMapping = inheritanceMapping;
+    }
+
+    public ResultSet findById(int id, Class<?> clazz, InheritanceMapping inheritanceMapping) {
         String query = SelectQuery.prepareFindById(id, clazz, inheritanceMapping);
 
         try (Connection conn = dataSource.getConnection()) {
 
             Statement stmt = conn.createStatement();
             stmt.executeUpdate(query);
-            log.info("Wykonano select findById("+id+")");
+            log.info("Wykonano select findById(" + id + ")");
             return stmt.getResultSet();
 
         } catch (SQLException e) {

@@ -20,6 +20,12 @@ public class UpdateExecutor {
     @Autowired
     private DataSource dataSource;
 
+    private InheritanceMapping inheritanceMapping;
+
+    public void setInheritanceMapping(InheritanceMapping inheritanceMapping) {
+        this.inheritanceMapping = inheritanceMapping;
+    }
+
     public <T> ResultSet update(T objectToUpdate, Class<T> clazz, InheritanceMapping inheritanceMapping) throws InvocationTargetException, IllegalAccessException {
         String query = UpdateQuery.prepareUpdate(objectToUpdate, clazz, inheritanceMapping);
 

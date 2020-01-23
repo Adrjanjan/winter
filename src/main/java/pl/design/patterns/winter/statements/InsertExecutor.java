@@ -10,6 +10,7 @@ import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import pl.design.patterns.winter.inheritance.mapping.InheritanceMapping;
 import pl.design.patterns.winter.query.InsertQueryBuilder;
 import pl.design.patterns.winter.query.QueryBuilder;
 import pl.design.patterns.winter.schemas.DatabaseSchema;
@@ -24,6 +25,12 @@ public class InsertExecutor {
 
     @Autowired
     private DatabaseSchema databaseSchema;
+
+    private InheritanceMapping inheritanceMapping;
+
+    public void setInheritanceMapping(InheritanceMapping inheritanceMapping) {
+        this.inheritanceMapping = inheritanceMapping;
+    }
 
     public <T> void execute(T object) throws InvocationTargetException, IllegalAccessException {
         log.info("Insert klasy : " + object.getClass()

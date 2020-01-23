@@ -19,14 +19,19 @@ public class DeleteExecutor {
     @Autowired
     private DataSource dataSource;
 
-    public <T> ResultSet delete(int id, Class<T> clazz, InheritanceMapping inheritanceMapping)
-    {
+    private InheritanceMapping inheritanceMapping;
+
+    public void setInheritanceMapping(InheritanceMapping inheritanceMapping) {
+        this.inheritanceMapping = inheritanceMapping;
+    }
+
+    public <T> ResultSet delete(int id, Class<T> clazz, InheritanceMapping inheritanceMapping) {
         String query = DeleteQuery.prepareDelete(id, clazz, inheritanceMapping);
 
         try (Connection conn = dataSource.getConnection()) {
 
             Statement stmt = conn.createStatement();
-            log.info("Wykonuje delete gdzie ("+id+")");
+            log.info("Wykonuje delete gdzie (" + id + ")");
             stmt.executeUpdate(query);
             return stmt.getResultSet();
 
