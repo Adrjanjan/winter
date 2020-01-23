@@ -51,26 +51,16 @@ public class InsertQueryBuilder extends QueryBuilder {
             for (ColumnSchema column : tableSchema.getColumns()) {
                 Class c = column.getJavaType();
                 Object o = column.get(object);
-                if(o.getClass() == Integer.class)
-                {
-                    var x = (int)o;
-                    stringBuilder.append(x).append(", ");
-                }
-                else if(o.getClass() == Boolean.class)
-                {
-                    var x = (boolean)o;
-                    stringBuilder.append(x).append(", ");
-                }
-                else if(o.getClass() == Double.class)
-                {
-                    var x = (double)o;
-                    stringBuilder.append(x).append(", ");
-                }
-                else
+
+                if(o.getClass() == String.class)
                 {
                     stringBuilder.append("\"")
                             .append(c.cast(o).toString())
                             .append("\", ");
+                }
+                else
+                {
+                    stringBuilder.append(o.toString()).append(", ");
                 }
             }
 
