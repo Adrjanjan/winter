@@ -1,5 +1,7 @@
 package pl.design.patterns.winter.object.assembler;
 
+import pl.design.patterns.winter.annotations.DatabaseField;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.ResultSet;
@@ -7,37 +9,57 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import pl.design.patterns.winter.annotations.DatabaseField;
-
 public class ObjectAssembler<T> {
 
-    public T assemble(Class<T> clazz, ResultSet resultSet)
-            throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException, SQLException {
-        T object = clazz.getConstructor()
-                .newInstance();
-        loadResultSetIntoObject(resultSet, object);
+    public T assemble(Class<T> clazz, ResultSet resultSet) {
+        T object = null;
+        try {
+            object = clazz.getConstructor()
+                    .newInstance();
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+            e.printStackTrace();
+        }
+        if (object != null) {
+            loadResultSetIntoObject(resultSet, object);
+        }
+        else {
+            throw new RuntimeException();
+        }
         return object;
     }
 
-    public List<T> assembleMultiple(Class<T> clazz, ResultSet resultSet)
-            throws SQLException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+    public List<T> assembleMultiple(Class<T> clazz, ResultSet resultSet) {
         List<T> list = new ArrayList<>();
-        while (resultSet.next()) {
+        while (true) {
+            try {
+                if (!resultSet.next()) break;
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
             list.add(assemble(clazz, resultSet));
         }
         return list;
     }
 
-    private void loadResultSetIntoObject(ResultSet resultSet, Object object) throws IllegalArgumentException, IllegalAccessException, SQLException {
+    private void loadResultSetIntoObject(ResultSet resultSet, Object object) {
         Class<?> clazz = object.getClass();
         for (Field field : clazz.getDeclaredFields()) {
             field.setAccessible(true);
             DatabaseField column = field.getAnnotation(DatabaseField.class);
-            Object value = resultSet.getObject(column.name());
+            Object value = null;
+            try {
+                value = resultSet.getObject(column.name());
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
             Class<?> type = field.getType();
             Class<?> boxed = boxPrimitiveClass(type);
             boxed.cast(value);
-            field.set(object, value);
+            try {
+                field.set(object, value);
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
         }
     }
 
