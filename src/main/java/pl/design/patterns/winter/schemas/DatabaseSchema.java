@@ -27,7 +27,7 @@ public class DatabaseSchema {
         return tables;
     }
 
-    public void addTableSchemas(List<TableSchema> tableSchemas) {
+    public void addTableSchemas(Collection<TableSchema> tableSchemas) {
         tables.addAll(tableSchemas);
     }
 
