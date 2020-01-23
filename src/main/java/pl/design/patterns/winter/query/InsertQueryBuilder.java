@@ -82,10 +82,10 @@ public class InsertQueryBuilder extends QueryBuilder {
                 if ( o == null ) {
                     stringBuilder.append(parseNullableField(object, column));
                 } else if ( o.getClass() == String.class ) {
-                    stringBuilder.append("\"")
+                    stringBuilder.append("'")
                             .append(c.cast(o)
                                     .toString())
-                            .append("\", ");
+                            .append("', ");
                 } else {
                     stringBuilder.append(o.toString())
                             .append(", ");
