@@ -1,9 +1,9 @@
 package pl.design.patterns.winter.query;
 
+import java.sql.JDBCType;
+
 import pl.design.patterns.winter.schemas.ColumnSchema;
 import pl.design.patterns.winter.schemas.TableSchema;
-
-import java.sql.JDBCType;
 
 public class CreateTableQuery {
 
@@ -23,14 +23,15 @@ public class CreateTableQuery {
             sb.append(columnSchema.getColumnName());
             sb.append(" ");
 
-            if (columnSchema.isGeneratedId()) {
+            if ( columnSchema.isGeneratedId() ) {
                 sb.append("SERIAL");
-            }
-            else {
-                sb.append(columnSchema.getSqlType() == JDBCType.VARCHAR ? "TEXT" : columnSchema.getSqlType().getName());
+            } else {
+                sb.append(columnSchema.getSqlType() == JDBCType.VARCHAR ? "TEXT"
+                        : columnSchema.getSqlType()
+                                .getName());
             }
 
-            if (!columnSchema.isNullable()) {
+            if ( !columnSchema.isNullable() ) {
                 sb.append(" ");
                 sb.append("NOT NULL");
             }
@@ -39,7 +40,8 @@ public class CreateTableQuery {
         }
 
         sb.append("PRIMARY KEY(");
-        sb.append(tableSchema.getIdField().getColumnName());
+        sb.append(tableSchema.getIdField()
+                .getColumnName());
         sb.append(")\n");
 
         sb.append(");");
