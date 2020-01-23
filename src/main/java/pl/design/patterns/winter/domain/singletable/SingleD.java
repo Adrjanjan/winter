@@ -1,20 +1,18 @@
-package pl.design.patterns.winter.domain.abcd;
+package pl.design.patterns.winter.domain.singletable;
 
 import lombok.Getter;
 import lombok.Setter;
 import pl.design.patterns.winter.annotations.DatabaseField;
 import pl.design.patterns.winter.annotations.DatabaseTable;
-import pl.design.patterns.winter.annotations.Id;
 import pl.design.patterns.winter.inheritance.InheritanceMappingType;
 
 @Getter
 @Setter
-@DatabaseTable(inheritanceType = InheritanceMappingType.CONCRETE_TABLE)
-class A {
+@DatabaseTable(inheritanceType = InheritanceMappingType.SINGLE_TABLE)
+class SingleD extends SingleA {
     @DatabaseField
-    public String stringA;
+    int intD;
 
-    @Id
     @DatabaseField
-    private int intA;
+    String stringD;
 }
