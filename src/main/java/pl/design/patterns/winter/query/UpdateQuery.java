@@ -1,3 +1,4 @@
+
 package pl.design.patterns.winter.query;
 
 import pl.design.patterns.winter.annotations.Id;
@@ -45,8 +46,12 @@ public class UpdateQuery {
             //TODO Update ID?
             //updatowanie Id-kow ... ?
             objectForLoop = columnSchema.get(objectToUpdate);
-            sb.append(objectForLoop)
-                    .append(",");
+            if (objectForLoop.getClass() == String.class)
+                sb.append("\"");
+            sb.append(objectForLoop);
+            if (objectForLoop.getClass() == String.class)
+                sb.append("\"");
+            sb.append(",");
         }
 
         sb.deleteCharAt(sb.length() - 1);
