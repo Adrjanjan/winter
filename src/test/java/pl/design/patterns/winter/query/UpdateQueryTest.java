@@ -33,14 +33,14 @@ public class UpdateQueryTest {
         InheritanceMapping mappingOfUpdateQueryA = mapper.map(A.class);
 
         //then
-        assertEquals("UPDATE a SET (AInt,AString,ADouble) = (1,ala,5.55) WHERE a_int = 1;", UpdateQuery.prepareUpdate(testAVariable, UpdateQueryTest.A.class, mappingOfUpdateQueryA));
+        assertEquals("UPDATE a SET (AInt,AString,ADouble) = (1,\"ala\",5.55) WHERE a_int = 1;", UpdateQuery.prepareUpdate(testAVariable, UpdateQueryTest.A.class, mappingOfUpdateQueryA));
 
     }
 
     @Getter
     @Setter
     @DatabaseTable(inheritanceType = InheritanceMappingType.CLASS_TABLE)
-    class A {
+    public class A {
         @Id
         @DatabaseField
         public int AInt;
