@@ -58,7 +58,7 @@ public class DatabaseStructureCreator implements CommandLineRunner {
             databaseSchema.addTableSchemas(databaseSchema.getMapping(clazz)
                     .getAllTableSchemas());
 
-            OrmManager.addDao(clazz, new Dao<>(clazz, mapping));
+            OrmManager.addDao(clazz, new Dao<>(clazz, databaseSchema.getMapping(clazz)));
 
         }
 

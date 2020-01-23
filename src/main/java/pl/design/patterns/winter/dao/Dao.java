@@ -2,6 +2,7 @@ package pl.design.patterns.winter.dao;
 
 import lombok.Data;
 import pl.design.patterns.winter.inheritance.mapping.InheritanceMapping;
+import pl.design.patterns.winter.object.assembler.ObjectAssembler;
 import pl.design.patterns.winter.statements.DeleteExecutor;
 import pl.design.patterns.winter.statements.InsertExecutor;
 import pl.design.patterns.winter.statements.SelectExecutor;
@@ -13,6 +14,7 @@ import java.util.List;
 public class Dao<T> {
 
     private Class<T> clazz;
+    private ObjectAssembler<T> objectAssembler;
     private InheritanceMapping inheritanceMapping;
     private InsertExecutor insertExecutor;
     private SelectExecutor selectExecutor;
@@ -37,22 +39,22 @@ public class Dao<T> {
     }
 
     public List<T> findAll() {
-        return null;
+        return objectAssembler.assembleMultiple(clazz, selectExecutor.findAll(clazz));
     }
 
     public T findById(int id) {
-        return null;
+        return objectAssembler.assemble(clazz, selectExecutor.findById(id, clazz));
     }
 
     public void update(T obj) {
         updateExecutor.update(obj, clazz);
     }
 
-    public void delete(T obj) {
-    }
-
     public void deleteById(int id) {
         deleteExecutor.delete(id, clazz);
     }
+
+    //    public void delete(T obj) {
+    //    }
 
 }
