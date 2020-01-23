@@ -1,81 +1,85 @@
 package pl.design.patterns.winter.query;
 
-import java.lang.reflect.InvocationTargetException;
 import java.sql.JDBCType;
 
 import pl.design.patterns.winter.exceptions.InvalidObjectClassException;
 import pl.design.patterns.winter.schemas.ColumnSchema;
 import pl.design.patterns.winter.schemas.TableSchema;
 
-public class CreateTableQuery extends QueryBuilder{
+public class CreateTableQuery extends QueryBuilder {
     private Object object;
-    private StringBuilder sb;
 
     public CreateTableQuery() {
-        sb = new StringBuilder();
+        query = new StringBuilder();
     }
 
     @Override
-    public <T> QueryBuilder setObject(T object) {
-        if(object.getClass() != TableSchema.class)
-            throw new InvalidObjectClassException("Object has incorrect class: " + object.getClass().toString());
+    <T> QueryBuilder withObject(T object) {
+        if ( object.getClass() != TableSchema.class )
+            throw new InvalidObjectClassException("Object has incorrect class: " + object.getClass()
+                    .toString());
         this.object = object;
         return this;
     }
 
     @Override
-    public QueryBuilder createOperation() {
-        sb.append("CREATE TABLE IF NOT EXISTS ");
+    QueryBuilder createOperation() {
+        query.append("CREATE TABLE IF NOT EXISTS ");
 
         return this;
     }
 
     @Override
-    public QueryBuilder setTable() {
-        sb.append(((TableSchema)object).getTableName())
+    QueryBuilder setTable() {
+        query.append(((TableSchema) object).getTableName())
                 .append(" ");
         return this;
     }
 
     @Override
-    public QueryBuilder setFields() {
-        for (ColumnSchema columnSchema : ((TableSchema)object).getColumns()) {
-            sb.append("\t");
-            sb.append(columnSchema.getColumnName());
-            sb.append(" ");
+    QueryBuilder setFields() {
+        for (ColumnSchema columnSchema : ((TableSchema) object).getColumns()) {
+            query.append("\t");
+            query.append(columnSchema.getColumnName());
+            query.append(" ");
 
             if ( columnSchema.isGeneratedId() ) {
-                sb.append("SERIAL");
+                query.append("SERIAL");
             } else {
-                sb.append(columnSchema.getSqlType() == JDBCType.VARCHAR ? "TEXT"
+                query.append(columnSchema.getSqlType() == JDBCType.VARCHAR ? "TEXT"
                         : columnSchema.getSqlType()
-                        .getName());
+                                .getName());
             }
 
             if ( !columnSchema.isNullable() ) {
-                sb.append(" ");
-                sb.append("NOT NULL");
+                query.append(" ");
+                query.append("NOT NULL");
             }
 
-            sb.append(",\n");
+            query.append(",\n");
         }
 
-        sb.append("PRIMARY KEY(");
-        sb.append(((TableSchema)object).getIdField()
+        query.append("PRIMARY KEY(");
+        query.append(((TableSchema) object).getIdField()
                 .getColumnName());
-        sb.append(")\n");
+        query.append(")\n");
 
-        sb.append(");");
+        query.append(");");
         return this;
     }
 
     @Override
-    public QueryBuilder setValues() {
+    QueryBuilder setValues() {
         return this;
     }
 
     @Override
-    public String generate() {
-        return sb.toString();
+    QueryBuilder withCondition() {
+        return this;
+    }
+
+    @Override
+    QueryBuilder compose() {
+        return this;
     }
 }

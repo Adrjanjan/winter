@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import pl.design.patterns.winter.query.InsertQueryBuilder;
+import pl.design.patterns.winter.query.QueryBuildDirector;
 import pl.design.patterns.winter.query.QueryBuilder;
 import pl.design.patterns.winter.schemas.DatabaseSchema;
 
@@ -26,29 +27,26 @@ public class InsertExecutor {
     private DatabaseSchema databaseSchema;
 
     public <T> void execute(T object) throws InvocationTargetException, IllegalAccessException {
-        log.info("Insert klasy : " + object.getClass()
+        log.info("Insert object of class: " + object.getClass()
                 .getName());
         var inheritanceMapping = databaseSchema.getMapping(object.getClass());
-        QueryBuilder builder = new InsertQueryBuilder(inheritanceMapping);
 
-        String query = builder.setObject(object)
-                .createOperation()
-                .setTable()
-                .setFields()
-                .setValues()
-                .generate();
+        QueryBuilder builder = new InsertQueryBuilder(inheritanceMapping);
+        QueryBuildDirector<T> queryBuildDirector = new QueryBuildDirector<>(builder);
+        String query = queryBuildDirector.withObject(object)
+                .build();
 
         try (Connection conn = dataSource.getConnection()) {
 
             // TODO: mozna dodac najpierw sprawdzenie
             Statement stmt = conn.createStatement();
             stmt.execute(query);
-            log.info("Dodano obiekt klasy: " + object.getClass()
+            log.info("Inserted  object of class: " + object.getClass()
                     .toString());
 
         } catch (SQLException e) {
 
-            log.error("Nie udalo sie dodać obiektu klasy " + object.getClass()
+            log.error("Could not insert object of class:  " + object.getClass()
                     .toString());
             throw new RuntimeException(e);
 
