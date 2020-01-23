@@ -1,6 +1,9 @@
 package pl.design.patterns.winter;
 
-import lombok.extern.apachecommons.CommonsLog;
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -8,6 +11,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
 import org.springframework.core.type.filter.AnnotationTypeFilter;
 import org.springframework.stereotype.Component;
+
 import pl.design.patterns.winter.annotations.DatabaseTable;
 import pl.design.patterns.winter.inheritance.mappers.InheritanceMapper;
 import pl.design.patterns.winter.inheritance.mapping.InheritanceMapping;
@@ -15,9 +19,7 @@ import pl.design.patterns.winter.schemas.DatabaseSchema;
 import pl.design.patterns.winter.statements.CreateTableExecutor;
 import pl.design.patterns.winter.statements.DropTablesExecutor;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.List;
+import lombok.extern.apachecommons.CommonsLog;
 
 @CommonsLog
 @Component
@@ -47,17 +49,22 @@ public class DatabaseStructureCreator implements CommandLineRunner {
         List<Class<?>> annotatedClasses = findAnnotatedClasses();
         for (Class<?> clazz : annotatedClasses) {
 
-            InheritanceMapper mapper = clazz.getAnnotation(DatabaseTable.class).inheritanceType().getMappingClass().getConstructor(DatabaseSchema.class).newInstance(databaseSchema);
+            InheritanceMapper mapper = clazz.getAnnotation(DatabaseTable.class)
+                    .inheritanceType()
+                    .getMappingClass()
+                    .getConstructor(DatabaseSchema.class)
+                    .newInstance(databaseSchema);
             InheritanceMapping mapping = mapper.map(clazz);
             databaseSchema.addTableSchemas(mapping.getAllTableSchemas());
 
         }
 
-        if (dropTables) {
+        if ( dropTables ) {
             dropExecutor.dropTables();
         }
 
-        databaseSchema.getAllTables().forEach(tableSchema -> createExecutor.createTable(tableSchema));
+        databaseSchema.getAllTables()
+                .forEach(tableSchema -> createExecutor.createTable(tableSchema));
     }
 
     private List<Class<?>> findAnnotatedClasses() {

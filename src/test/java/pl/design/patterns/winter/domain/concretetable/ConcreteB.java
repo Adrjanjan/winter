@@ -1,18 +1,19 @@
 package pl.design.patterns.winter.domain.concretetable;
 
-import lombok.Getter;
-import lombok.Setter;
 import pl.design.patterns.winter.annotations.DatabaseField;
 import pl.design.patterns.winter.annotations.DatabaseTable;
 import pl.design.patterns.winter.inheritance.InheritanceMappingType;
 
+import lombok.Getter;
+import lombok.Setter;
+
 @Getter
 @Setter
 @DatabaseTable(inheritanceType = InheritanceMappingType.CONCRETE_TABLE)
-public class ConcreteC extends ConcreteB {
+public class ConcreteB extends ConcreteA {
     @DatabaseField
-    protected String stringC;
+    protected int intB;
 
     @DatabaseField
-    private int intC;
+    String stringB;
 }

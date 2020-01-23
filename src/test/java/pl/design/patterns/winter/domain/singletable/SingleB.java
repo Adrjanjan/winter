@@ -1,20 +1,19 @@
 package pl.design.patterns.winter.domain.singletable;
 
-import lombok.Getter;
-import lombok.Setter;
 import pl.design.patterns.winter.annotations.DatabaseField;
 import pl.design.patterns.winter.annotations.DatabaseTable;
-import pl.design.patterns.winter.annotations.Id;
 import pl.design.patterns.winter.inheritance.InheritanceMappingType;
+
+import lombok.Getter;
+import lombok.Setter;
 
 @Getter
 @Setter
 @DatabaseTable(inheritanceType = InheritanceMappingType.SINGLE_TABLE)
-public class SingleA {
+public class SingleB extends SingleA {
     @DatabaseField
-    public String stringA;
+    protected int intB;
 
-    @Id
     @DatabaseField
-    private int intA;
+    String stringB;
 }

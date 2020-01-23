@@ -1,17 +1,19 @@
 package pl.design.patterns.winter.schemas;
 
-import lombok.Data;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.sql.SQLType;
+
 import org.springframework.util.StringUtils;
+
 import pl.design.patterns.winter.annotations.DatabaseField;
 import pl.design.patterns.winter.annotations.Id;
 import pl.design.patterns.winter.exceptions.InvalidIdFieldTypeException;
 import pl.design.patterns.winter.query.TypeMapper;
 import pl.design.patterns.winter.utils.NameUtils;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.sql.SQLType;
+import lombok.Data;
 
 @Data
 public class ColumnSchema {
@@ -39,10 +41,11 @@ public class ColumnSchema {
         final var databaseFieldAnnotation = field.getAnnotation(DatabaseField.class);
         this.columnName = NameUtils.extractColumnName(field);
         if ( field.isAnnotationPresent(Id.class) ) {
-            if (field.getType() != int.class) {
+            if ( field.getType() != int.class ) {
                 throw new InvalidIdFieldTypeException();
             }
-            this.isGeneratedId = field.getAnnotation(Id.class).generated();
+            this.isGeneratedId = field.getAnnotation(Id.class)
+                    .generated();
         } else {
             this.isGeneratedId = false;
         }

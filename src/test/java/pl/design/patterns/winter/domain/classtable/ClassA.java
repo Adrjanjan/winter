@@ -1,18 +1,21 @@
 package pl.design.patterns.winter.domain.classtable;
 
-import lombok.Getter;
-import lombok.Setter;
 import pl.design.patterns.winter.annotations.DatabaseField;
 import pl.design.patterns.winter.annotations.DatabaseTable;
+import pl.design.patterns.winter.annotations.Id;
 import pl.design.patterns.winter.inheritance.InheritanceMappingType;
+
+import lombok.Getter;
+import lombok.Setter;
 
 @Getter
 @Setter
 @DatabaseTable(inheritanceType = InheritanceMappingType.CLASS_TABLE)
-public class ClassB extends ClassA {
+public class ClassA {
     @DatabaseField
-    protected int intB;
+    public String stringA;
 
+    @Id
     @DatabaseField
-    String stringB;
+    private int intA;
 }

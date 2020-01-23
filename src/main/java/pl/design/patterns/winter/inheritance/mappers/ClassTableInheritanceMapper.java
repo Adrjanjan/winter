@@ -1,15 +1,15 @@
 package pl.design.patterns.winter.inheritance.mappers;
 
+import java.lang.reflect.Field;
+import java.util.*;
+import java.util.stream.Collectors;
+
 import pl.design.patterns.winter.inheritance.mapping.ClassTableInheritanceMapping;
 import pl.design.patterns.winter.inheritance.mapping.InheritanceMapping;
 import pl.design.patterns.winter.schemas.ColumnSchema;
 import pl.design.patterns.winter.schemas.DatabaseSchema;
 import pl.design.patterns.winter.schemas.TableSchema;
 import pl.design.patterns.winter.utils.NameUtils;
-
-import java.lang.reflect.Field;
-import java.util.*;
-import java.util.stream.Collectors;
 
 public class ClassTableInheritanceMapper extends InheritanceMapper {
 
@@ -40,13 +40,14 @@ public class ClassTableInheritanceMapper extends InheritanceMapper {
                 .collect(Collectors.toList());
 
         Class<? super T> root = clazz;
-        while (!root.getSuperclass().equals(Object.class)) {
+        while ( !root.getSuperclass()
+                .equals(Object.class)) {
             root = root.getSuperclass();
         }
         ColumnSchema rootIdField = getIdField(Arrays.asList(root.getDeclaredFields()));
 
         List<ColumnSchema> columnSchemas = createColumnSchemas(fields);
-        if (!columnSchemas.contains(rootIdField)) {
+        if ( !columnSchemas.contains(rootIdField) ) {
             columnSchemas.add(rootIdField);
         }
 
