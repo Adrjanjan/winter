@@ -1,16 +1,15 @@
 package pl.design.patterns.winter.query;
 
+import pl.design.patterns.winter.annotations.DatabaseField;
+
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import pl.design.patterns.winter.annotations.DatabaseField;
-
 public abstract class QueryBuilder {
-    public abstract <T> String prepare(T object) throws InvocationTargetException, IllegalAccessException;
+    public abstract <T> String prepare(T object);
 
     @SuppressWarnings("unchecked")
     <T> List<Field> getFieldsToIncludeInQuery(T object) {

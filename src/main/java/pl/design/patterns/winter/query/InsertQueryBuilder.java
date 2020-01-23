@@ -1,13 +1,12 @@
 package pl.design.patterns.winter.query;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.util.*;
-
 import pl.design.patterns.winter.exceptions.NonNullableFieldIsNull;
 import pl.design.patterns.winter.inheritance.mapping.InheritanceMapping;
 import pl.design.patterns.winter.schemas.ColumnSchema;
 import pl.design.patterns.winter.schemas.TableSchema;
+
+import java.lang.reflect.Field;
+import java.util.*;
 
 public class InsertQueryBuilder extends QueryBuilder {
 
@@ -18,7 +17,7 @@ public class InsertQueryBuilder extends QueryBuilder {
     }
 
     @Override
-    public <T> String prepare(T object) throws InvocationTargetException, IllegalAccessException {
+    public <T> String prepare(T object) {
         StringBuilder sb = new StringBuilder();
         Map<TableSchema, StringBuilder> mapTableSchemaToBuilder = new HashMap<>();
         Set<TableSchema> setTableSchema = new HashSet<>();

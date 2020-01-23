@@ -1,20 +1,16 @@
 package pl.design.patterns.winter.statements;
 
-import java.lang.reflect.InvocationTargetException;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.Statement;
-
-import javax.sql.DataSource;
-
+import lombok.extern.apachecommons.CommonsLog;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
 import pl.design.patterns.winter.query.InsertQueryBuilder;
 import pl.design.patterns.winter.query.QueryBuilder;
 import pl.design.patterns.winter.schemas.DatabaseSchema;
 
-import lombok.extern.apachecommons.CommonsLog;
+import javax.sql.DataSource;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 @CommonsLog
 @Component
@@ -25,7 +21,7 @@ public class InsertExecutor {
     @Autowired
     private DatabaseSchema databaseSchema;
 
-    public <T> void execute(T object) throws InvocationTargetException, IllegalAccessException {
+    public <T> void execute(T object) {
         log.info("Insert klasy : " + object.getClass()
                 .getName());
         var inheritanceMapping = databaseSchema.getMapping(object.getClass());
