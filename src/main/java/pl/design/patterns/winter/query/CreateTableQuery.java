@@ -26,9 +26,8 @@ public class CreateTableQuery {
             if ( columnSchema.isGeneratedId() ) {
                 sb.append("SERIAL");
             } else {
-                sb.append(columnSchema.getSqlType() == JDBCType.VARCHAR ? "TEXT"
-                        : columnSchema.getSqlType()
-                                .getName());
+                sb.append(columnSchema.getSqlType() == "VARCHAR" ? "TEXT"
+                        : columnSchema.getSqlType());
             }
 
             if ( !columnSchema.isNullable() ) {
