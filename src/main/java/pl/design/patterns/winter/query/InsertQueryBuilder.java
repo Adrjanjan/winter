@@ -28,18 +28,22 @@ public class InsertQueryBuilder extends QueryBuilder {
 
         List<Field> fields = getFieldsToIncludeInQuery(object);
 
+        //Zapisujemy mapę(tabela->StringBuilder) oraz zbór tabel
         for(Field field : fields)
         {
             mapTableSchemaToBuilder.put(inheritanceMapping.getTableSchema(field.getName()), new StringBuilder());
             setTableSchema.add(inheritanceMapping.getTableSchema(field.getName()));
         }
 
+        //Dla każdej tabeli (w której wylądował) obiekt
         for(var tableSchema: setTableSchema) {
+            //bierzemy Buildera "pod polecenia"
             var stringBuilder = mapTableSchemaToBuilder.get(tableSchema);
             stringBuilder.append("INSERT INTO ")
                     .append(tableSchema.getTableName())
                     .append(" (");
 
+            //Kolumny pod polecenia
             for (ColumnSchema column : tableSchema.getColumns()) {
                 stringBuilder.append(column.getColumnName()).append(", ");
             }
@@ -48,6 +52,7 @@ public class InsertQueryBuilder extends QueryBuilder {
 
             //TODO to powinno byc lepiej zrobione ale nie mam pomysłu jak
             //bo dla każdego typu musielibyśmy zrobić rzutowanie
+            //wartosc pol obiektu
             for (ColumnSchema column : tableSchema.getColumns()) {
                 Class c = column.getJavaType();
                 Object o = column.get(object);
@@ -67,6 +72,7 @@ public class InsertQueryBuilder extends QueryBuilder {
             stringBuilder.delete(stringBuilder.length() - 2, stringBuilder.length() - 1);
             stringBuilder.append(");");
 
+            //łączenie stringBuilderów w jedno wieksze polecenie
             sb.append(stringBuilder.toString())
                     .append(" ");
         }
