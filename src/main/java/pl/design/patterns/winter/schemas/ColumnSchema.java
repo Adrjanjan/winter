@@ -71,6 +71,9 @@ public class ColumnSchema {
     }
 
     public Object get(Object obj) throws InvocationTargetException, IllegalAccessException {
+        /* ja wiem że to nie może tak być (po coś ten IllegalAccessException jest xD)
+        Ale inaczej mi wlaśnie wywala ten wyjątek przy teście a nie wiem gdzie indziej to zmienić przy UpdateQueryTest*/
+        this.getter.setAccessible(true);
         return this.getter.invoke(obj);
     }
 }
