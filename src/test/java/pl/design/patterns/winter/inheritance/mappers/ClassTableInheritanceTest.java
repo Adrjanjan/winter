@@ -1,20 +1,22 @@
 package pl.design.patterns.winter.inheritance.mappers;
 
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.junit.Assert.assertEquals;
+
+import java.lang.reflect.InvocationTargetException;
+
 import org.junit.Assert;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+
 import pl.design.patterns.winter.domain.classtable.ClassB;
 import pl.design.patterns.winter.domain.classtable.ClassC;
 import pl.design.patterns.winter.domain.classtable.ClassD;
 import pl.design.patterns.winter.inheritance.mapping.InheritanceMapping;
 import pl.design.patterns.winter.query.InsertQueryBuilder;
+import pl.design.patterns.winter.query.QueryBuildDirector;
 import pl.design.patterns.winter.schemas.DatabaseSchema;
 
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-@Disabled
-public class ClassTableInheritanceTest {
+public class ClassTableInheritanceTest<T> {
 
     @Test
     void classTableInheritance_checkMappingsCorrectness() {
@@ -42,7 +44,7 @@ public class ClassTableInheritanceTest {
     }
 
     @Test
-    void insertQueryForClassClassB() {
+    void insertQueryForClassClassB() throws InvocationTargetException, IllegalAccessException {
         // given
         DatabaseSchema databaseSchema = new DatabaseSchema();
         InheritanceMapper mapper = new ClassTableInheritanceMapper(databaseSchema);
@@ -54,7 +56,10 @@ public class ClassTableInheritanceTest {
         b.setStringB("B");
         b.setIntA(1);
         b.setStringA("A");
-        var sql = insertQueryBuilder.prepare(b);
+
+        QueryBuildDirector<T> queryBuildDirector = new QueryBuildDirector<>(insertQueryBuilder);
+        String sql = queryBuildDirector.withObject((T) b)
+                .build();
 
         // then
         Assert.assertThat(sql, containsString("INSERT INTO class_a ( string_a, int_a ) VALUES ( \"A\", 1 );"));
@@ -62,7 +67,7 @@ public class ClassTableInheritanceTest {
     }
 
     @Test
-    void insertQueryForClassClassC() {
+    void insertQueryForClassClassC() throws InvocationTargetException, IllegalAccessException {
         // given
         DatabaseSchema databaseSchema = new DatabaseSchema();
         InheritanceMapper mapper = new ClassTableInheritanceMapper(databaseSchema);
@@ -76,7 +81,10 @@ public class ClassTableInheritanceTest {
         c.setStringB("B");
         c.setIntA(1);
         c.setStringA("A");
-        var sql = insertQueryBuilder.prepare(c);
+
+        QueryBuildDirector<T> queryBuildDirector = new QueryBuildDirector<>(insertQueryBuilder);
+        String sql = queryBuildDirector.withObject((T) c)
+                .build();
 
         // then
         Assert.assertThat(sql, containsString("INSERT INTO class_a ( string_a, int_a ) VALUES ( \"A\", 1 );"));
@@ -85,7 +93,7 @@ public class ClassTableInheritanceTest {
     }
 
     @Test
-    void insertQueryForClassClassD() {
+    void insertQueryForClassClassD() throws InvocationTargetException, IllegalAccessException {
         // given
         DatabaseSchema databaseSchema = new DatabaseSchema();
         InheritanceMapper mapper = new ClassTableInheritanceMapper(databaseSchema);
@@ -97,7 +105,10 @@ public class ClassTableInheritanceTest {
         d.setStringD("D");
         d.setIntA(1);
         d.setStringA("A");
-        var sql = insertQueryBuilder.prepare(d);
+
+        QueryBuildDirector<T> queryBuildDirector = new QueryBuildDirector<>(insertQueryBuilder);
+        String sql = queryBuildDirector.withObject((T) d)
+                .build();
 
         // then
         Assert.assertThat(sql, containsString("INSERT INTO class_a ( string_a, int_a ) VALUES ( \"A\", 1 );"));
