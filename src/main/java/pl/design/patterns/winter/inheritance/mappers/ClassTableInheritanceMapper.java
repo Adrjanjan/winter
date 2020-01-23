@@ -2,6 +2,7 @@ package pl.design.patterns.winter.inheritance.mappers;
 
 import pl.design.patterns.winter.inheritance.mapping.ClassTableInheritanceMapping;
 import pl.design.patterns.winter.inheritance.mapping.InheritanceMapping;
+import pl.design.patterns.winter.schemas.ColumnSchema;
 import pl.design.patterns.winter.schemas.DatabaseSchema;
 import pl.design.patterns.winter.schemas.TableSchema;
 import pl.design.patterns.winter.utils.NameUtils;
@@ -38,11 +39,22 @@ public class ClassTableInheritanceMapper extends InheritanceMapper {
                         .startsWith("this"))
                 .collect(Collectors.toList());
 
+        Class<? super T> root = clazz;
+        while (!root.getSuperclass().equals(Object.class)) {
+            root = root.getSuperclass();
+        }
+        ColumnSchema rootIdField = getIdField(Arrays.asList(root.getDeclaredFields()));
+
+        List<ColumnSchema> columnSchemas = createColumnSchemas(fields);
+        if (!columnSchemas.contains(rootIdField)) {
+            columnSchemas.add(rootIdField);
+        }
+
         TableSchema tableSchema = TableSchema.builder()
                 .clazz(clazz)
                 .tableName(NameUtils.extractTableName(clazz))
-                .columns(createColumnSchemas(fields))
-                .idField(getIdField(fields))
+                .columns(columnSchemas)
+                .idField(rootIdField)
                 .build();
 
         final Map<String, TableSchema> columnMapping = new HashMap<>();
