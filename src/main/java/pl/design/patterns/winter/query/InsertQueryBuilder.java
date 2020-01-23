@@ -74,6 +74,6 @@ public class InsertQueryBuilder extends QueryBuilder {
         if ( column.isNullable() ) {
             return "NULL, ";
         }
-        throw new NonNullableFieldIsNull(String.format("Cannot inset object %s into database.", object.toString()));
+        throw new NonNullableFieldIsNull(String.format("Cannot insert object %s into database.", object.toString()));
     }
 }
