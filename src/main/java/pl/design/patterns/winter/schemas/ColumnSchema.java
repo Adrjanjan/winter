@@ -2,6 +2,7 @@ package pl.design.patterns.winter.schemas;
 
 import lombok.Data;
 import org.springframework.util.StringUtils;
+
 import pl.design.patterns.winter.annotations.DatabaseField;
 import pl.design.patterns.winter.annotations.Id;
 import pl.design.patterns.winter.exceptions.InvalidIdFieldTypeException;
@@ -43,8 +44,7 @@ public class ColumnSchema {
             }
             this.isGeneratedId = field.getAnnotation(Id.class)
                     .generated();
-        }
-        else {
+        } else {
             this.isGeneratedId = false;
         }
         this.isNullable = databaseFieldAnnotation.nullable();

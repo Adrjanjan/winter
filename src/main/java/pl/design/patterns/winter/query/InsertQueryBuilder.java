@@ -16,6 +16,7 @@ public class InsertQueryBuilder extends QueryBuilder {
         this.inheritanceMapping = inheritanceMapping;
     }
 
+    //TODO działa dla concreteTableInheritance, Single wymaga poprawy budowania TableSchema
     @Override
     public <T> String prepare(T object) {
         StringBuilder sb = new StringBuilder();
@@ -24,17 +25,21 @@ public class InsertQueryBuilder extends QueryBuilder {
 
         List<Field> fields = getFieldsToIncludeInQuery(object);
 
-        for (Field field : fields) {
+        //Zapisujemy mapę(tabela->StringBuilder) oraz zbór tabel
+        for(Field field : fields) {
             mapTableSchemaToBuilder.put(inheritanceMapping.getTableSchema(field.getName()), new StringBuilder());
             setTableSchema.add(inheritanceMapping.getTableSchema(field.getName()));
         }
 
-        for (var tableSchema : setTableSchema) {
+        //Dla każdej tabeli (w której wylądował) obiekt
+        for(var tableSchema: setTableSchema) {
+            //bierzemy Buildera "pod polecenia"
             var stringBuilder = mapTableSchemaToBuilder.get(tableSchema);
             stringBuilder.append("INSERT INTO ")
                     .append(tableSchema.getTableName())
                     .append(" ( ");
 
+            //Kolumny pod polecenia
             for (ColumnSchema column : tableSchema.getColumns()) {
                 stringBuilder.append(column.getColumnName())
                         .append(", ");
@@ -42,6 +47,9 @@ public class InsertQueryBuilder extends QueryBuilder {
             stringBuilder.delete(stringBuilder.length() - 2, stringBuilder.length() - 1);
             stringBuilder.append(") VALUES ( ");
 
+            //TODO to powinno byc lepiej zrobione ale nie mam pomysłu jak
+            //bo dla każdego typu musielibyśmy zrobić rzutowanie
+            //wartosc pol obiektu
             for (ColumnSchema column : tableSchema.getColumns()) {
                 Class c = column.getJavaType();
                 Object o = column.get(object);
@@ -62,6 +70,7 @@ public class InsertQueryBuilder extends QueryBuilder {
             stringBuilder.delete(stringBuilder.length() - 2, stringBuilder.length() - 1);
             stringBuilder.append(");");
 
+            //łączenie stringBuilderów w jedno wieksze polecenie
             sb.append(stringBuilder.toString())
                     .append(" ");
         }

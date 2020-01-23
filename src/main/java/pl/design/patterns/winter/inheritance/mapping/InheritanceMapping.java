@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 public class InheritanceMapping {
+    // mapa nazwa pola -> tabela w której znajduje sie dane pole
     private Map<String, TableSchema> fieldNameToTable;
 
     public InheritanceMapping(Map<String, TableSchema> fieldNameToTable) {
