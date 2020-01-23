@@ -12,11 +12,11 @@ public abstract class QueryBuilder {
     public abstract <T> String prepare(T object);
 
     @SuppressWarnings("unchecked")
-    <T> List<Field> getFieldsToIncludeInQuery(T object) {
-        List<Field> fields = new ArrayList<>(Arrays.asList(object.getClass()
+    <T> List<Field> getFieldsToIncludeInQuery(Class<T> clazz) {
+        List<Field> fields = new ArrayList<>(Arrays.asList(clazz
                 .getDeclaredFields()));
 
-        Class<? super T> superclass = (Class<? super T>) object.getClass()
+        Class<? super T> superclass = clazz
                 .getSuperclass();
 
         while (superclass != null && !superclass.equals(Object.class)) {

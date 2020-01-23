@@ -23,7 +23,7 @@ public class InsertQueryBuilder extends QueryBuilder {
         Map<TableSchema, StringBuilder> mapTableSchemaToBuilder = new HashMap<>();
         Set<TableSchema> setTableSchema = new HashSet<>();
 
-        List<Field> fields = getFieldsToIncludeInQuery(object);
+        List<Field> fields = getFieldsToIncludeInQuery(object.getClass());
 
         //Zapisujemy mapę(tabela->StringBuilder) oraz zbór tabel
         for(Field field : fields) {
@@ -50,17 +50,24 @@ public class InsertQueryBuilder extends QueryBuilder {
             //TODO to powinno byc lepiej zrobione ale nie mam pomysłu jak
             //bo dla każdego typu musielibyśmy zrobić rzutowanie
             //wartosc pol obiektu
+            // TODO
             for (ColumnSchema column : tableSchema.getColumns()) {
                 Class c = column.getJavaType();
-                Object o = column.get(object);
+                Object o;
+                try {
+                    o = column.get(object);
+                } catch (Exception e) {
+                    stringBuilder.append("NULL, ");
+                    continue;
+                }
 
                 if ( o == null ) {
                     stringBuilder.append(parseNullableField(object, column));
                 } else if ( o.getClass() == String.class ) {
-                    stringBuilder.append("\"")
+                    stringBuilder.append("'")
                             .append(c.cast(o)
                                     .toString())
-                            .append("\", ");
+                            .append("', ");
                 } else {
                     stringBuilder.append(o.toString())
                             .append(", ");

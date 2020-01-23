@@ -16,7 +16,13 @@ public class OrmManager {
         daos.put(c, dao);
     }
 
-    public static Dao<?> getDao(Class<?> classToMap) {
-        return daos.get(classToMap);
+    @SuppressWarnings("unchecked")
+    public static <T> Dao<T> getDao(Class<T> classToMap) {
+        if (daos.containsKey(classToMap)) {
+            return (Dao<T>) daos.get(classToMap);
+        }
+        else {
+            throw new RuntimeException(String.format("Couldn't get Dao for class %s", classToMap.getName()));
+        }
     }
 }

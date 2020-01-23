@@ -1,6 +1,5 @@
 package pl.design.patterns.winter.dao;
 
-import lombok.Data;
 import pl.design.patterns.winter.inheritance.mapping.InheritanceMapping;
 import pl.design.patterns.winter.object.assembler.ObjectAssembler;
 import pl.design.patterns.winter.statements.DeleteExecutor;
@@ -8,30 +7,25 @@ import pl.design.patterns.winter.statements.InsertExecutor;
 import pl.design.patterns.winter.statements.SelectExecutor;
 import pl.design.patterns.winter.statements.UpdateExecutor;
 
+import javax.sql.DataSource;
 import java.util.List;
 
-@Data
 public class Dao<T> {
 
     private Class<T> clazz;
     private ObjectAssembler<T> objectAssembler;
-    private InheritanceMapping inheritanceMapping;
     private InsertExecutor insertExecutor;
     private SelectExecutor selectExecutor;
     private UpdateExecutor updateExecutor;
     private DeleteExecutor deleteExecutor;
 
-    public Dao(Class<T> clazz, InheritanceMapping inheritanceMapping) {
+    public Dao(DataSource dataSource, Class<T> clazz, InheritanceMapping inheritanceMapping) {
         this.clazz = clazz;
-        this.inheritanceMapping = inheritanceMapping;
-        this.insertExecutor = new InsertExecutor();
-        this.insertExecutor.setInheritanceMapping(inheritanceMapping);
-        this.selectExecutor = new SelectExecutor();
-        this.selectExecutor.setInheritanceMapping(inheritanceMapping);
-        this.updateExecutor = new UpdateExecutor();
-        this.updateExecutor.setInheritanceMapping(inheritanceMapping);
-        this.deleteExecutor = new DeleteExecutor();
-        this.deleteExecutor.setInheritanceMapping(inheritanceMapping);
+        this.objectAssembler = new ObjectAssembler<>();
+        this.insertExecutor = new InsertExecutor(dataSource, inheritanceMapping);
+        this.selectExecutor = new SelectExecutor(dataSource, inheritanceMapping, objectAssembler);
+        this.updateExecutor = new UpdateExecutor(dataSource, inheritanceMapping);
+        this.deleteExecutor = new DeleteExecutor(dataSource, inheritanceMapping);
     }
 
     public void insert(T obj) {
@@ -39,11 +33,11 @@ public class Dao<T> {
     }
 
     public List<T> findAll() {
-        return objectAssembler.assembleMultiple(clazz, selectExecutor.findAll(clazz));
+        return selectExecutor.findAll(clazz);
     }
 
     public T findById(int id) {
-        return objectAssembler.assemble(clazz, selectExecutor.findById(id, clazz));
+        return selectExecutor.findById(id, clazz);
     }
 
     public void update(T obj) {

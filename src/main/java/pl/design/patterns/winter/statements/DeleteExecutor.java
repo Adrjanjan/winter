@@ -1,8 +1,6 @@
 package pl.design.patterns.winter.statements;
 
 import lombok.extern.apachecommons.CommonsLog;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import pl.design.patterns.winter.inheritance.mapping.InheritanceMapping;
 import pl.design.patterns.winter.query.DeleteQuery;
 
@@ -13,15 +11,18 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 @CommonsLog
-@Component
 public class DeleteExecutor {
 
-    @Autowired
     private DataSource dataSource;
 
     private InheritanceMapping inheritanceMapping;
 
     public void setInheritanceMapping(InheritanceMapping inheritanceMapping) {
+        this.inheritanceMapping = inheritanceMapping;
+    }
+
+    public DeleteExecutor(DataSource dataSource, InheritanceMapping inheritanceMapping) {
+        this.dataSource = dataSource;
         this.inheritanceMapping = inheritanceMapping;
     }
 

@@ -15,6 +15,7 @@ import pl.design.patterns.winter.schemas.DatabaseSchema;
 import pl.design.patterns.winter.statements.CreateTableExecutor;
 import pl.design.patterns.winter.statements.DropTablesExecutor;
 
+import javax.sql.DataSource;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +26,9 @@ public class DatabaseStructureCreator implements CommandLineRunner {
 
     @Autowired
     private DatabaseSchema databaseSchema;
+
+    @Autowired
+    private DataSource dataSource;
 
     @Autowired
     private CreateTableExecutor createExecutor;
@@ -58,7 +62,7 @@ public class DatabaseStructureCreator implements CommandLineRunner {
             databaseSchema.addTableSchemas(databaseSchema.getMapping(clazz)
                     .getAllTableSchemas());
 
-            OrmManager.addDao(clazz, new Dao<>(clazz, databaseSchema.getMapping(clazz)));
+            OrmManager.addDao(clazz, new Dao<>(dataSource, clazz, databaseSchema.getMapping(clazz)));
 
         }
 

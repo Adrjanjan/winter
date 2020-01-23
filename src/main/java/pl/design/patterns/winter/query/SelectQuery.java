@@ -1,7 +1,7 @@
 package pl.design.patterns.winter.query;
 
-import pl.design.patterns.winter.annotations.DatabaseTable;
 import pl.design.patterns.winter.annotations.Id;
+import pl.design.patterns.winter.exceptions.NoIdFieldException;
 import pl.design.patterns.winter.inheritance.mapping.InheritanceMapping;
 import pl.design.patterns.winter.schemas.TableSchema;
 
@@ -9,7 +9,7 @@ import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
-public class SelectQuery {
+public class SelectQuery extends QueryBuilder {
     public static <T> String prepareFindById(int id, Class<T> clazz, InheritanceMapping inheritanceMapping)
     {
         StringBuilder sb = new StringBuilder();
@@ -41,14 +41,16 @@ public class SelectQuery {
         return sb.toString();
     }
 
-    public static String prepareFindAll(Class<?> clazz, InheritanceMapping inheritanceMapping) {
+    public String prepareFindAll(Class<?> clazz, InheritanceMapping inheritanceMapping) {
         StringBuilder sb = new StringBuilder();
         sb.append("SELECT * FROM ");
 
         // z wszystkich pol klasy wybieram tylko te ktore byly mapowane do BD i biore pierwsze do wyszukania
-        Field fieldInMapping = Arrays.stream(clazz.getDeclaredFields())
+        Field fieldInMapping = getFieldsToIncludeInQuery(clazz)
+                .stream()
                 .filter(field -> field.isAnnotationPresent(Id.class))
-                .findFirst().orElseThrow(RuntimeException::new);
+                .findFirst()
+                .orElseThrow(NoIdFieldException::new);
 
         //inheritance mapping get tablice ktora ma pole fieldInMapping.getName() a nastepnie nazwe tej tablicy do string buildera
         sb.append(inheritanceMapping.getTableSchema(fieldInMapping.getName()).getTableName());
@@ -56,5 +58,10 @@ public class SelectQuery {
         // TODO Class-Table
 
         return sb.toString();
+    }
+
+    @Override
+    public <T> String prepare(T object) {
+        return null;
     }
 }

@@ -1,14 +1,9 @@
 package pl.design.patterns.winter.statements;
 
 import lombok.extern.apachecommons.CommonsLog;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
 import pl.design.patterns.winter.inheritance.mapping.InheritanceMapping;
-
 import pl.design.patterns.winter.query.InsertQueryBuilder;
 import pl.design.patterns.winter.query.QueryBuilder;
-import pl.design.patterns.winter.schemas.DatabaseSchema;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -16,9 +11,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 @CommonsLog
-@Component
 public class InsertExecutor {
-    @Autowired
     private DataSource dataSource;
 
     private InheritanceMapping inheritanceMapping;
@@ -27,11 +20,21 @@ public class InsertExecutor {
         this.inheritanceMapping = inheritanceMapping;
     }
 
+    public void setDataSource(DataSource dataSource) {
+        this.dataSource = dataSource;
+    }
+
+    public InsertExecutor(DataSource dataSource, InheritanceMapping inheritanceMapping) {
+        this.dataSource = dataSource;
+        this.inheritanceMapping = inheritanceMapping;
+    }
+
     public <T> void execute(T object) {
         log.info("Insert klasy : " + object.getClass()
                 .getName());
         QueryBuilder builder = new InsertQueryBuilder(inheritanceMapping);
         String query = builder.prepare(object);
+        System.out.println(query);
 
         try (Connection conn = dataSource.getConnection()) {
 
