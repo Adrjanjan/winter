@@ -1,9 +1,6 @@
 package pl.design.patterns.winter;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.List;
-
+import lombok.extern.apachecommons.CommonsLog;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -11,15 +8,17 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
 import org.springframework.core.type.filter.AnnotationTypeFilter;
 import org.springframework.stereotype.Component;
-
 import pl.design.patterns.winter.annotations.DatabaseTable;
+import pl.design.patterns.winter.dao.Dao;
 import pl.design.patterns.winter.inheritance.mappers.InheritanceMapper;
 import pl.design.patterns.winter.inheritance.mapping.InheritanceMapping;
 import pl.design.patterns.winter.schemas.DatabaseSchema;
 import pl.design.patterns.winter.statements.CreateTableExecutor;
 import pl.design.patterns.winter.statements.DropTablesExecutor;
 
-import lombok.extern.apachecommons.CommonsLog;
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.List;
 
 @CommonsLog
 @Component
@@ -56,6 +55,8 @@ public class DatabaseStructureCreator implements CommandLineRunner {
                     .newInstance(databaseSchema);
             InheritanceMapping mapping = mapper.map(clazz);
             databaseSchema.addTableSchemas(mapping.getAllTableSchemas());
+
+            OrmManager.addDao(clazz, new Dao<>(clazz, mapping));
 
         }
 
