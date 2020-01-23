@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 //UPDATE tabela SET (pole1,pole2,...) = (wartosc1,wartosc2,...) WHERE <rownosc id>;
 public class UpdateQuery {
     public static <T> String prepareUpdate(T objectToUpdate, Class<T> clazz, InheritanceMapping inheritanceMapping) throws InvocationTargetException, IllegalAccessException {
+        //Class clazz = objectToUpdate.getClass();
         StringBuilder sb = new StringBuilder();
         sb.append("UPDATE ");
 
@@ -30,7 +31,8 @@ public class UpdateQuery {
         for (Field field : clazz.getFields()) {
             //TODO Update ID?
             //Czy chcemy updatowac Id-ki ...?
-            sb.append(field.getName()).append(",");
+            sb.append(field.getName())
+                    .append(",");
         }
 
         //usuwanie ostatniego ","
@@ -43,7 +45,8 @@ public class UpdateQuery {
             //TODO Update ID?
             //updatowanie Id-kow ... ?
             objectForLoop = columnSchema.get(objectToUpdate);
-            sb.append(objectForLoop).append(",");
+            sb.append(objectForLoop)
+                    .append(",");
         }
 
         sb.deleteCharAt(sb.length() - 1);
