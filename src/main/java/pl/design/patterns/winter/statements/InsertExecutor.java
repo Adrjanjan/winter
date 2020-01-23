@@ -1,14 +1,19 @@
 package pl.design.patterns.winter.statements;
 
-import lombok.extern.apachecommons.CommonsLog;
-import pl.design.patterns.winter.inheritance.mapping.InheritanceMapping;
-import pl.design.patterns.winter.query.InsertQueryBuilder;
-import pl.design.patterns.winter.query.QueryBuilder;
-
-import javax.sql.DataSource;
+import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
+
+import javax.sql.DataSource;
+
+import pl.design.patterns.winter.exceptions.CouldNotInsertIntoTableException;
+import pl.design.patterns.winter.inheritance.mapping.InheritanceMapping;
+import pl.design.patterns.winter.query.InsertQueryBuilder;
+import pl.design.patterns.winter.query.QueryBuildDirector;
+import pl.design.patterns.winter.query.QueryBuilder;
+
+import lombok.extern.apachecommons.CommonsLog;
 
 @CommonsLog
 public class InsertExecutor {
@@ -30,25 +35,28 @@ public class InsertExecutor {
     }
 
     public <T> void execute(T object) {
-        log.info("Insert klasy : " + object.getClass()
+        log.info("Insert object of class: " + object.getClass()
                 .getName());
+
         QueryBuilder builder = new InsertQueryBuilder(inheritanceMapping);
-        String query = builder.prepare(object);
-        System.out.println(query);
+        QueryBuildDirector<T> queryBuildDirector = new QueryBuildDirector<>(builder);
+        String query;
+        try {
+            query = queryBuildDirector.withObject(object)
+                    .build();
+        } catch (InvocationTargetException | IllegalAccessException e) {
+            throw new CouldNotInsertIntoTableException(String.format("Could not insert object %s", object.toString()), e);
+        }
 
         try (Connection conn = dataSource.getConnection()) {
-
-            // TODO: mozna dodac najpierw sprawdzenie
             Statement stmt = conn.createStatement();
             stmt.execute(query);
-            log.info("Dodano obiekt klasy: " + object.getClass()
+            log.info("Inserted  object of class: " + object.getClass()
                     .toString());
-
         } catch (SQLException e) {
-
-            log.error("Nie udalo sie dodać obiektu klasy " + object.getClass()
+            log.error("Could not insert object of class: " + object.getClass()
                     .toString());
-            throw new RuntimeException(e);
+            throw new CouldNotInsertIntoTableException(String.format("Could not insert object %s", object.toString()), e);
 
         }
     }
