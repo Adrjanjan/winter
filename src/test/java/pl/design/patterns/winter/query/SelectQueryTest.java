@@ -24,17 +24,17 @@ public class SelectQueryTest {
         InheritanceMapper mapper = new ClassTableInheritanceMapper(databaseSchema);
 
         // when
-        InheritanceMapping mappingOfSelectQueryTestClass = mapper.map(SelectQueryTestClass.class);
+        InheritanceMapping mappingOfSelectQueryTestClass = mapper.map(SelectQueryTestClass1.class);
 
         //then
-        assertEquals("SELECT * FROM select_query_test_class WHERE param1_int = 12;", SelectQuery.prepareFindById(12,SelectQueryTestClass.class,mappingOfSelectQueryTestClass));
-
+        assertEquals("SELECT * FROM select_query_test_class1 WHERE param1_int = 12;", SelectQuery.prepareFindById(12, SelectQueryTestClass1.class, mappingOfSelectQueryTestClass));
+        //TODO Inny test zasugerowany przez Adriana
     }
 
     @Getter
     @Setter
     @DatabaseTable(inheritanceType = InheritanceMappingType.CLASS_TABLE)
-    class SelectQueryTestClass{
+    class SelectQueryTestClass1 {
         @Id
         @DatabaseField
         public int param1Int;

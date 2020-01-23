@@ -17,9 +17,9 @@ public class DeleteQuery {
         StringBuilder sb = new StringBuilder();
         sb.append("DELETE FROM ");
 
-        Field fieldWithId = Arrays.stream(clazz.getDeclaredFields()).filter(
-                field -> field.getAnnotationsByType(Id.class) != null
-        ).collect(Collectors.toList()).get(0);
+        Field fieldWithId = Arrays.stream(clazz.getDeclaredFields())
+                .filter(field -> field.isAnnotationPresent(Id.class))
+                .collect(Collectors.toList()).get(0);
 
         TableSchema tableWithIdField = inheritanceMapping.getTableSchema(fieldWithId.getName());
         sb.append(tableWithIdField.getTableName());
@@ -33,7 +33,6 @@ public class DeleteQuery {
 
         // TODO przygotowane pod CLASS_TABLE ale nie jestem pewien czy bd dzialac
         // Usuwanie odpowiedniego wiersza z tabeli "wyżej". //Wiele tabel wyżej ...? Czy tak może być ...?
-
         if(clazz.getAnnotation(DatabaseTable.class).inheritanceType().equals(InheritanceMappingType.CLASS_TABLE)) {
             Class superClass = clazz.getSuperclass();
             if(superClass!=Object.class) {
