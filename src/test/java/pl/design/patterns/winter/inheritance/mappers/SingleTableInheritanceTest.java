@@ -48,7 +48,7 @@ public class SingleTableInheritanceTest {
     }
 
     @Test
-    void InsertQuery() throws InvocationTargetException, IllegalAccessException {
+    void insertQuery() throws InvocationTargetException, IllegalAccessException {
         // given
         DatabaseSchema databaseSchema = new DatabaseSchema();
         InheritanceMapper mapper = new ConcreteTableInheritanceMapper(databaseSchema);

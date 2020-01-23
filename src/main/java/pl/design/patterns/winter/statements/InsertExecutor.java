@@ -22,7 +22,7 @@ public class InsertExecutor {
 
     private InheritanceMapping inheritanceMapping;
 
-    public <T> void Execute(T object) throws InvocationTargetException, IllegalAccessException {
+    public <T> void execute(T object) throws InvocationTargetException, IllegalAccessException {
         log.info("Insert klasy : " + object.getClass().getName());
 
         QueryBuilder builder = new InsertQueryBuilder(inheritanceMapping);
