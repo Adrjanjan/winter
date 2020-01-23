@@ -57,7 +57,7 @@ public class SingleTableInheritanceMapper extends InheritanceMapper {
                     .collect(Collectors.toList());
 
             TableSchema tableSchema = inheritanceMapping.getTableSchema(superclass.getFields()[0].getName());
-            tableSchema.setColumns(createColumnSchemas(fields));
+            tableSchema.addColumns(createColumnSchemas(fields));
             final Map<String, TableSchema> mapping = new HashMap<>();
             fields.stream()
                     .map(Field::getName)

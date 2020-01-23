@@ -9,7 +9,7 @@ import pl.design.patterns.winter.inheritance.InheritanceMappingType;
 @Getter
 @Setter
 @DatabaseTable(inheritanceType = InheritanceMappingType.CONCRETE_TABLE)
-class ConcreteC extends ConcreteB {
+public class ConcreteC extends ConcreteB {
     @DatabaseField
     protected String stringC;
 

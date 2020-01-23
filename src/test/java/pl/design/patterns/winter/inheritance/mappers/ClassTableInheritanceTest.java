@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import pl.design.patterns.winter.annotations.DatabaseField;
 import pl.design.patterns.winter.annotations.DatabaseTable;
 import pl.design.patterns.winter.annotations.Id;
+import pl.design.patterns.winter.domain.classtable.ClassB;
 import pl.design.patterns.winter.inheritance.InheritanceMappingType;
 import pl.design.patterns.winter.inheritance.mapping.InheritanceMapping;
 import pl.design.patterns.winter.query.InsertQueryBuilder;
@@ -48,16 +49,17 @@ public class ClassTableInheritanceTest {
         //given
         DatabaseSchema databaseSchema = new DatabaseSchema();
         InheritanceMapper mapper = new ClassTableInheritanceMapper(databaseSchema);
-        InsertQueryBuilder insertQueryBuilder = new InsertQueryBuilder(mapper.map(B.class));
+        InsertQueryBuilder insertQueryBuilder = new InsertQueryBuilder(mapper.map(ClassB.class));
 
         //when
-        var b= new B();
+        var b= new ClassB();
         b.setIntB(2);
         b.setStringB("B");
         b.setIntA(1);
         b.setStringA("A");
         var sql = insertQueryBuilder.prepare(b);
 
+        //INSERT INTO a (intA, strA) VA (1, A) INSERT INTO b (idA, intB strB) VA (1, 2, B)
         //then
         Assert.assertEquals("", sql,
                 "INSERT INTO b (int_b, string_b ) VALUES ( 2, \"B\" ); INSERT INTO a (string_a, int_a ) VALUES ( \"A\", 1 ); ");

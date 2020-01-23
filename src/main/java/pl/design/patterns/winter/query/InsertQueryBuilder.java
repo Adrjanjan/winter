@@ -1,6 +1,5 @@
 package pl.design.patterns.winter.query;
 
-import pl.design.patterns.winter.annotations.DatabaseField;
 import pl.design.patterns.winter.inheritance.mapping.InheritanceMapping;
 import pl.design.patterns.winter.schemas.ColumnSchema;
 import pl.design.patterns.winter.schemas.TableSchema;
@@ -8,7 +7,6 @@ import pl.design.patterns.winter.schemas.TableSchema;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class InsertQueryBuilder extends QueryBuilder {
 
@@ -19,7 +17,6 @@ public class InsertQueryBuilder extends QueryBuilder {
         this.inheritanceMapping = inheritanceMapping;
     }
 
-    //TODO działa dla concreteTableInheritance, Single wymaga poprawy budowania TableSchema
     @Override
     public <T> String prepare(T object) throws InvocationTargetException, IllegalAccessException {
         StringBuilder sb = new StringBuilder();
@@ -46,13 +43,15 @@ public class InsertQueryBuilder extends QueryBuilder {
             stringBuilder.delete(stringBuilder.length() - 2, stringBuilder.length() - 1);
             stringBuilder.append(") VALUES ( ");
 
-            //TODO to powinno byc lepiej zrobione ale nie mam pomysłu jak
-            //bo dla każdego typu musielibyśmy zrobić rzutowanie
             for (ColumnSchema column : tableSchema.getColumns()) {
                 Class c = column.getJavaType();
                 Object o = column.get(object);
 
-                if(o.getClass() == String.class)
+                if(o == null && column.isNullable())
+                {
+                    stringBuilder.append("NULL, ");
+                }
+                else if(o.getClass() == String.class)
                 {
                     stringBuilder.append("\"")
                             .append(c.cast(o).toString())

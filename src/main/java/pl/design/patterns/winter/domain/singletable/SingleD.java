@@ -9,7 +9,7 @@ import pl.design.patterns.winter.inheritance.InheritanceMappingType;
 @Getter
 @Setter
 @DatabaseTable(inheritanceType = InheritanceMappingType.SINGLE_TABLE)
-class SingleD extends SingleA {
+public class SingleD extends SingleA {
     @DatabaseField
     int intD;
 

@@ -10,7 +10,7 @@ import pl.design.patterns.winter.inheritance.InheritanceMappingType;
 @Getter
 @Setter
 @DatabaseTable(inheritanceType = InheritanceMappingType.CLASS_TABLE)
-class ClassA {
+public class ClassA {
     @DatabaseField
     public String stringA;
 

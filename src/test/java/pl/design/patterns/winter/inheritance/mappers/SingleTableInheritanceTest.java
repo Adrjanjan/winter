@@ -7,6 +7,8 @@ import org.junit.jupiter.api.Test;
 import pl.design.patterns.winter.annotations.DatabaseField;
 import pl.design.patterns.winter.annotations.DatabaseTable;
 import pl.design.patterns.winter.annotations.Id;
+import pl.design.patterns.winter.domain.singletable.SingleB;
+import pl.design.patterns.winter.domain.singletable.SingleC;
 import pl.design.patterns.winter.inheritance.InheritanceMappingType;
 import pl.design.patterns.winter.inheritance.mapping.InheritanceMapping;
 import pl.design.patterns.winter.query.InsertQueryBuilder;
@@ -48,30 +50,41 @@ public class SingleTableInheritanceTest {
     }
 
     @Test
-    void insertQuery() throws InvocationTargetException, IllegalAccessException {
+    void insertQueryB() throws InvocationTargetException, IllegalAccessException {
         // given
         DatabaseSchema databaseSchema = new DatabaseSchema();
-        InheritanceMapper mapper = new ConcreteTableInheritanceMapper(databaseSchema);
+        InheritanceMapper mapper = new SingleTableInheritanceMapper(databaseSchema);
 
-        InsertQueryBuilder insertQueryBuilder = new InsertQueryBuilder(mapper.map(A.class));
-
-        // when
-        var a= new A();
-        a.setIntA(1);
-        a.setStringA("A");
-        var sql = insertQueryBuilder.prepare(a);
-        //sql = INSERT INTO a (string_a, int_a ) VALUES ( "A", 1 );
-        insertQueryBuilder = new InsertQueryBuilder(mapper.map(B.class));
+        InsertQueryBuilder insertQueryBuilder = new InsertQueryBuilder(mapper.map(SingleB.class));
 
         // when
-        var b= new B();
+        var b= new SingleB();
         b.setIntA(1);
         b.setStringA("A");
         b.setStringB("B");
         b.setIntB(2);
-        sql = insertQueryBuilder.prepare(b);
-        //sql = INSERT INTO b (int_b, string_b, string_a, int_a ) VALUES ( 2, "B", "A", 1 );
-        //TODO zła nazwa tabeli ale pola już lepsze XD
+        var sql = insertQueryBuilder.prepare(b);
+        //then
+        //Assert.assertEquals("", sql,"");
+    }
+
+    @Test
+    void insertQueryC() throws InvocationTargetException, IllegalAccessException {
+        // given
+        DatabaseSchema databaseSchema = new DatabaseSchema();
+        InheritanceMapper mapper = new SingleTableInheritanceMapper(databaseSchema);
+
+        InsertQueryBuilder insertQueryBuilder = new InsertQueryBuilder(mapper.map(SingleC.class));
+
+        // when
+        var c= new SingleC();
+        c.setIntA(1);
+        c.setStringA("A");
+        //c.setStringB("B");
+        c.setIntB(2);
+        c.setIntC(3);
+        c.setStringC("C");
+        var sql = insertQueryBuilder.prepare(c);
         //then
         //Assert.assertEquals("", sql,"");
     }
@@ -124,5 +137,4 @@ public class SingleTableInheritanceTest {
         @DatabaseField
         String stringD;
     }
-
 }

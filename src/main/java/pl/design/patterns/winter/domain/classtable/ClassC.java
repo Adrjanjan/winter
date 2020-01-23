@@ -9,7 +9,7 @@ import pl.design.patterns.winter.inheritance.InheritanceMappingType;
 @Getter
 @Setter
 @DatabaseTable(inheritanceType = InheritanceMappingType.CLASS_TABLE)
-class ClassC extends ClassB {
+public class ClassC extends ClassB {
     @DatabaseField
     protected String stringC;
 
