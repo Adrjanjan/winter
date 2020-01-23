@@ -12,44 +12,77 @@ import pl.design.patterns.winter.schemas.TableSchema;
 public class InsertQueryBuilder extends QueryBuilder {
 
     private InheritanceMapping inheritanceMapping;
+    private StringBuilder sb;
+    Map<TableSchema, StringBuilder> mapTableSchemaToBuilder;
+    Set<TableSchema> setTableSchema;
+    Object object;
+    List<Field> fields;
 
     public InsertQueryBuilder(InheritanceMapping inheritanceMapping) {
         this.inheritanceMapping = inheritanceMapping;
+        this.sb = new StringBuilder();
+        this.mapTableSchemaToBuilder = new HashMap<>();
+        this.setTableSchema = new HashSet<>();
+        this.fields = new LinkedList<>();
     }
 
     @Override
-    public <T> String prepare(T object) throws InvocationTargetException, IllegalAccessException {
-        StringBuilder sb = new StringBuilder();
-        Map<TableSchema, StringBuilder> mapTableSchemaToBuilder = new HashMap<>();
-        Set<TableSchema> setTableSchema = new HashSet<>();
+    public <T> QueryBuilder setObject(T object) {
+        this.object = object;
+        fields = getFieldsToIncludeInQuery(object);
+        return this;
+    }
 
-        List<Field> fields = getFieldsToIncludeInQuery(object);
-
+    @Override
+    public QueryBuilder createOperation() {
         for (Field field : fields) {
             mapTableSchemaToBuilder.put(inheritanceMapping.getTableSchema(field.getName()), new StringBuilder());
             setTableSchema.add(inheritanceMapping.getTableSchema(field.getName()));
         }
+        setTableSchema.stream()
+                .forEach(tableSchema->mapTableSchemaToBuilder
+                        .get(tableSchema)
+                        .append("INSERT INTO "));
 
+        return this;
+    }
+
+    @Override
+    public QueryBuilder setTable() {
+        setTableSchema.stream()
+                .forEach(tableSchema->mapTableSchemaToBuilder
+                        .get(tableSchema)
+                        .append(tableSchema.getTableName())
+                        .append(" ( "));
+        return this;
+    }
+
+    @Override
+    public QueryBuilder setFields() {
         for (var tableSchema : setTableSchema) {
             var stringBuilder = mapTableSchemaToBuilder.get(tableSchema);
-            stringBuilder.append("INSERT INTO ")
-                    .append(tableSchema.getTableName())
-                    .append(" ( ");
-
             for (ColumnSchema column : tableSchema.getColumns()) {
                 stringBuilder.append(column.getColumnName())
                         .append(", ");
             }
             stringBuilder.delete(stringBuilder.length() - 2, stringBuilder.length() - 1);
             stringBuilder.append(") VALUES ( ");
+        }
 
+        return this;
+    }
+
+    @Override
+    public QueryBuilder setValues() throws InvocationTargetException, IllegalAccessException {
+        for (var tableSchema : setTableSchema) {
+            var stringBuilder = mapTableSchemaToBuilder.get(tableSchema);
             for (ColumnSchema column : tableSchema.getColumns()) {
                 Class c = column.getJavaType();
                 Object o = column.get(object);
 
-                if ( o == null ) {
+                if (o == null) {
                     stringBuilder.append(parseNullableField(object, column));
-                } else if ( o.getClass() == String.class ) {
+                } else if (o.getClass() == String.class) {
                     stringBuilder.append("\"")
                             .append(c.cast(o)
                                     .toString())
@@ -62,11 +95,17 @@ public class InsertQueryBuilder extends QueryBuilder {
 
             stringBuilder.delete(stringBuilder.length() - 2, stringBuilder.length() - 1);
             stringBuilder.append(");");
-
-            sb.append(stringBuilder.toString())
-                    .append(" ");
         }
+        return this;
+    }
 
+    @Override
+    public String generate() {
+        setTableSchema.stream()
+                .forEach(tableSchema->sb.append(mapTableSchemaToBuilder
+                        .get(tableSchema)
+                        .toString())
+                        .append(" "));
         return sb.toString();
     }
 

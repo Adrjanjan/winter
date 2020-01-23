@@ -55,7 +55,13 @@ public class ClassTableInheritanceTest {
         b.setStringB("B");
         b.setIntA(1);
         b.setStringA("A");
-        var sql = insertQueryBuilder.prepare(b);
+
+        var sql = insertQueryBuilder.setObject(b)
+                .createOperation()
+                .setTable()
+                .setFields()
+                .setValues()
+                .generate();
 
         // then
         Assert.assertThat(sql, containsString("INSERT INTO class_a ( string_a, int_a ) VALUES ( \"A\", 1 );"));
@@ -77,7 +83,12 @@ public class ClassTableInheritanceTest {
         c.setStringB("B");
         c.setIntA(1);
         c.setStringA("A");
-        var sql = insertQueryBuilder.prepare(c);
+        var sql = insertQueryBuilder.setObject(c)
+                .createOperation()
+                .setTable()
+                .setFields()
+                .setValues()
+                .generate();
 
         // then
         Assert.assertThat(sql, containsString("INSERT INTO class_a ( string_a, int_a ) VALUES ( \"A\", 1 );"));
@@ -98,7 +109,12 @@ public class ClassTableInheritanceTest {
         d.setStringD("D");
         d.setIntA(1);
         d.setStringA("A");
-        var sql = insertQueryBuilder.prepare(d);
+        var sql = insertQueryBuilder.setObject(d)
+                .createOperation()
+                .setTable()
+                .setFields()
+                .setValues()
+                .generate();
 
         // then
         Assert.assertThat(sql, containsString("INSERT INTO class_a ( string_a, int_a ) VALUES ( \"A\", 1 );"));

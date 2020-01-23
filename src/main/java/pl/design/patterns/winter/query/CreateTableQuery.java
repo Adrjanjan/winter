@@ -1,24 +1,45 @@
 package pl.design.patterns.winter.query;
 
+import java.lang.reflect.InvocationTargetException;
 import java.sql.JDBCType;
 
+import pl.design.patterns.winter.exceptions.InvalidObjectClassException;
 import pl.design.patterns.winter.schemas.ColumnSchema;
 import pl.design.patterns.winter.schemas.TableSchema;
 
-public class CreateTableQuery {
+public class CreateTableQuery extends QueryBuilder{
+    private Object object;
+    private StringBuilder sb;
 
-    public static String prepare(TableSchema tableSchema) {
-        StringBuilder sb = new StringBuilder();
+    public CreateTableQuery() {
+        sb = new StringBuilder();
+    }
 
-        sb.append("CREATE TABLE IF NOT EXISTS");
+    @Override
+    public <T> QueryBuilder setObject(T object) {
+        if(object.getClass() != TableSchema.class)
+            throw new InvalidObjectClassException("Object has incorrect class: " + object.getClass().toString());
+        this.object = object;
+        return this;
+    }
 
-        sb.append(" ");
-        sb.append(tableSchema.getTableName());
-        sb.append(" ");
+    @Override
+    public QueryBuilder createOperation() {
+        sb.append("CREATE TABLE IF NOT EXISTS ");
 
-        sb.append("(\n");
+        return this;
+    }
 
-        for (ColumnSchema columnSchema : tableSchema.getColumns()) {
+    @Override
+    public QueryBuilder setTable() {
+        sb.append(((TableSchema)object).getTableName())
+                .append(" ");
+        return this;
+    }
+
+    @Override
+    public QueryBuilder setFields() {
+        for (ColumnSchema columnSchema : ((TableSchema)object).getColumns()) {
             sb.append("\t");
             sb.append(columnSchema.getColumnName());
             sb.append(" ");
@@ -28,7 +49,7 @@ public class CreateTableQuery {
             } else {
                 sb.append(columnSchema.getSqlType() == JDBCType.VARCHAR ? "TEXT"
                         : columnSchema.getSqlType()
-                                .getName());
+                        .getName());
             }
 
             if ( !columnSchema.isNullable() ) {
@@ -40,13 +61,21 @@ public class CreateTableQuery {
         }
 
         sb.append("PRIMARY KEY(");
-        sb.append(tableSchema.getIdField()
+        sb.append(((TableSchema)object).getIdField()
                 .getColumnName());
         sb.append(")\n");
 
         sb.append(");");
-
-        return sb.toString();
+        return this;
     }
 
+    @Override
+    public QueryBuilder setValues() {
+        return this;
+    }
+
+    @Override
+    public String generate() {
+        return sb.toString();
+    }
 }

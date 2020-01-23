@@ -10,7 +10,14 @@ import java.util.stream.Collectors;
 import pl.design.patterns.winter.annotations.DatabaseField;
 
 public abstract class QueryBuilder {
-    public abstract <T> String prepare(T object) throws InvocationTargetException, IllegalAccessException;
+    //public abstract <T> String prepare(T object) throws InvocationTargetException, IllegalAccessException;
+
+    public abstract <T> QueryBuilder setObject(T object);
+    public abstract QueryBuilder createOperation();
+    public abstract QueryBuilder setTable();
+    public abstract QueryBuilder setFields();
+    public abstract QueryBuilder setValues() throws InvocationTargetException, IllegalAccessException;
+    public abstract String generate();
 
     @SuppressWarnings("unchecked")
     <T> List<Field> getFieldsToIncludeInQuery(T object) {

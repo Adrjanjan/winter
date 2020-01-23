@@ -30,7 +30,13 @@ public class InsertExecutor {
                 .getName());
         var inheritanceMapping = databaseSchema.getMapping(object.getClass());
         QueryBuilder builder = new InsertQueryBuilder(inheritanceMapping);
-        String query = builder.prepare(object);
+
+        String query = builder.setObject(object)
+                .createOperation()
+                .setTable()
+                .setFields()
+                .setValues()
+                .generate();
 
         try (Connection conn = dataSource.getConnection()) {
 

@@ -58,7 +58,13 @@ public class SingleTableInheritanceTest {
         b.setStringA("A");
         b.setStringB("B");
         b.setIntB(2);
-        var sql = insertQueryBuilder.prepare(b);
+        var sql = insertQueryBuilder.setObject(b)
+                .createOperation()
+                .setTable()
+                .setFields()
+                .setValues()
+                .generate();
+
         // then
         Assert.assertEquals("INSERT INTO single_a ( int_a, string_a, int_b, string_b ) VALUES ( 1, \"A\", 2, \"B\" ); ", sql);
     }
@@ -79,7 +85,13 @@ public class SingleTableInheritanceTest {
         // setStringB intentionally not set to see if NULL will be in query
         c.setIntC(3);
         c.setStringC("C");
-        var sql = insertQueryBuilder.prepare(c);
+        var sql = insertQueryBuilder.setObject(c)
+                .createOperation()
+                .setTable()
+                .setFields()
+                .setValues()
+                .generate();
+
         // then
         Assert.assertEquals("INSERT INTO single_a ( int_a, string_a, int_b, string_b, int_c, string_c ) VALUES ( 1, \"A\", 2, NULL, 3, \"C\" ); ", sql);
     }
@@ -98,7 +110,13 @@ public class SingleTableInheritanceTest {
         d.setStringA("A");
         d.setIntD(4);
         d.setStringD("D");
-        var sql = insertQueryBuilder.prepare(d);
+        var sql = insertQueryBuilder.setObject(d)
+                .createOperation()
+                .setTable()
+                .setFields()
+                .setValues()
+                .generate();
+
         // then
         Assert.assertEquals("INSERT INTO single_a ( int_a, string_a, int_d, string_d ) VALUES ( 1, \"A\", 4, \"D\" ); ", sql);
     }
