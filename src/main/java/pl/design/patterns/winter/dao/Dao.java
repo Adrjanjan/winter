@@ -1,5 +1,9 @@
 package pl.design.patterns.winter.dao;
 
+import java.util.List;
+
+import javax.sql.DataSource;
+
 import pl.design.patterns.winter.inheritance.mapping.InheritanceMapping;
 import pl.design.patterns.winter.object.assembler.ObjectAssembler;
 import pl.design.patterns.winter.statements.DeleteExecutor;
@@ -7,13 +11,9 @@ import pl.design.patterns.winter.statements.InsertExecutor;
 import pl.design.patterns.winter.statements.SelectExecutor;
 import pl.design.patterns.winter.statements.UpdateExecutor;
 
-import javax.sql.DataSource;
-import java.util.List;
-
 public class Dao<T> {
 
     private Class<T> clazz;
-    private ObjectAssembler<T> objectAssembler;
     private InsertExecutor insertExecutor;
     private SelectExecutor selectExecutor;
     private UpdateExecutor updateExecutor;
@@ -21,9 +21,8 @@ public class Dao<T> {
 
     public Dao(DataSource dataSource, Class<T> clazz, InheritanceMapping inheritanceMapping) {
         this.clazz = clazz;
-        this.objectAssembler = new ObjectAssembler<>();
         this.insertExecutor = new InsertExecutor(dataSource, inheritanceMapping);
-        this.selectExecutor = new SelectExecutor(dataSource, inheritanceMapping, objectAssembler);
+        this.selectExecutor = new SelectExecutor(dataSource, inheritanceMapping, new ObjectAssembler<>());
         this.updateExecutor = new UpdateExecutor(dataSource, inheritanceMapping);
         this.deleteExecutor = new DeleteExecutor(dataSource, inheritanceMapping);
     }
