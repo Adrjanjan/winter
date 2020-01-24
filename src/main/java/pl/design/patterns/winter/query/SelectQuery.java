@@ -1,13 +1,14 @@
 package pl.design.patterns.winter.query;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
+import java.util.stream.Collectors;
+
 import pl.design.patterns.winter.annotations.Id;
 import pl.design.patterns.winter.exceptions.NoIdFieldException;
 import pl.design.patterns.winter.inheritance.mapping.InheritanceMapping;
 import pl.design.patterns.winter.schemas.TableSchema;
-
-import java.lang.reflect.Field;
-import java.util.Arrays;
-import java.util.stream.Collectors;
 
 public class SelectQuery extends QueryBuilder {
     public static <T> String prepareFindById(int id, Class<T> clazz, InheritanceMapping inheritanceMapping)
@@ -61,7 +62,37 @@ public class SelectQuery extends QueryBuilder {
     }
 
     @Override
-    public <T> String prepare(T object) {
+    <T> QueryBuilder withObject(T object) {
+        return null;
+    }
+
+    @Override
+    QueryBuilder createOperation() {
+        return null;
+    }
+
+    @Override
+    QueryBuilder setTable() {
+        return null;
+    }
+
+    @Override
+    QueryBuilder setFields() {
+        return null;
+    }
+
+    @Override
+    QueryBuilder setValues() throws InvocationTargetException, IllegalAccessException {
+        return null;
+    }
+
+    @Override
+    QueryBuilder withCondition() {
+        return null;
+    }
+
+    @Override
+    QueryBuilder compose() {
         return null;
     }
 }
