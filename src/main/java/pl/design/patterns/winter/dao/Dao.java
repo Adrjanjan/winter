@@ -6,10 +6,10 @@ import javax.sql.DataSource;
 
 import pl.design.patterns.winter.inheritance.mapping.InheritanceMapping;
 import pl.design.patterns.winter.object.assembler.ObjectAssembler;
-import pl.design.patterns.winter.statements.DeleteExecutor;
-import pl.design.patterns.winter.statements.InsertExecutor;
-import pl.design.patterns.winter.statements.SelectExecutor;
-import pl.design.patterns.winter.statements.UpdateExecutor;
+import pl.design.patterns.winter.statements.executors.DeleteExecutor;
+import pl.design.patterns.winter.statements.executors.InsertExecutor;
+import pl.design.patterns.winter.statements.executors.SelectExecutor;
+import pl.design.patterns.winter.statements.executors.UpdateExecutor;
 
 public class Dao<T> {
 

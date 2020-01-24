@@ -1,4 +1,4 @@
-package pl.design.patterns.winter.query;
+package pl.design.patterns.winter.statements.query;
 
 import pl.design.patterns.winter.exceptions.InvalidObjectClassException;
 import pl.design.patterns.winter.schemas.ColumnSchema;

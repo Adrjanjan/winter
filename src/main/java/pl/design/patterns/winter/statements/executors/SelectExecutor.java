@@ -1,4 +1,4 @@
-package pl.design.patterns.winter.statements;
+package pl.design.patterns.winter.statements.executors;
 
 import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
@@ -12,9 +12,9 @@ import javax.sql.DataSource;
 import pl.design.patterns.winter.exceptions.CouldNotSelectFromTableException;
 import pl.design.patterns.winter.inheritance.mapping.InheritanceMapping;
 import pl.design.patterns.winter.object.assembler.ObjectAssembler;
-import pl.design.patterns.winter.query.QueryBuildDirector;
-import pl.design.patterns.winter.query.QueryBuilder;
-import pl.design.patterns.winter.query.SelectQueryBuilder;
+import pl.design.patterns.winter.statements.query.QueryBuildDirector;
+import pl.design.patterns.winter.statements.query.QueryBuilder;
+import pl.design.patterns.winter.statements.query.SelectQueryBuilder;
 
 import lombok.extern.apachecommons.CommonsLog;
 

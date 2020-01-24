@@ -1,4 +1,4 @@
-package pl.design.patterns.winter.statements;
+package pl.design.patterns.winter.statements.executors;
 
 import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
@@ -9,9 +9,9 @@ import javax.sql.DataSource;
 
 import pl.design.patterns.winter.exceptions.CouldNotInsertIntoTableException;
 import pl.design.patterns.winter.inheritance.mapping.InheritanceMapping;
-import pl.design.patterns.winter.query.InsertQueryBuilder;
-import pl.design.patterns.winter.query.QueryBuildDirector;
-import pl.design.patterns.winter.query.QueryBuilder;
+import pl.design.patterns.winter.statements.query.InsertQueryBuilder;
+import pl.design.patterns.winter.statements.query.QueryBuildDirector;
+import pl.design.patterns.winter.statements.query.QueryBuilder;
 
 import lombok.extern.apachecommons.CommonsLog;
 

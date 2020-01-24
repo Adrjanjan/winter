@@ -5,9 +5,7 @@ import pl.design.patterns.winter.inheritance.mappers.ConcreteTableInheritanceMap
 import pl.design.patterns.winter.inheritance.mappers.InheritanceMapper;
 import pl.design.patterns.winter.inheritance.mappers.SingleTableInheritanceMapper;
 
-//Enum do określenia strategii dziedziczenia
 public enum InheritanceMappingType {
-    // W "konstruktorze" ustawiane sa domyślne klasy jak to dzidziczenie ma wyglądać-> ustawiane mappingClass
     SINGLE_TABLE(SingleTableInheritanceMapper.class), CONCRETE_TABLE(ConcreteTableInheritanceMapper.class), CLASS_TABLE(ClassTableInheritanceMapper.class);
 
     private final Class<? extends InheritanceMapper> mappingClass;

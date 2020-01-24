@@ -1,6 +1,11 @@
 package pl.design.patterns.winter;
 
-import lombok.extern.apachecommons.CommonsLog;
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.sql.DataSource;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -8,17 +13,15 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
 import org.springframework.core.type.filter.AnnotationTypeFilter;
 import org.springframework.stereotype.Component;
+
 import pl.design.patterns.winter.annotations.DatabaseTable;
 import pl.design.patterns.winter.dao.Dao;
 import pl.design.patterns.winter.inheritance.mappers.InheritanceMapper;
 import pl.design.patterns.winter.schemas.DatabaseSchema;
-import pl.design.patterns.winter.statements.CreateTableExecutor;
-import pl.design.patterns.winter.statements.DropTablesExecutor;
+import pl.design.patterns.winter.statements.executors.CreateTableExecutor;
+import pl.design.patterns.winter.statements.executors.DropTablesExecutor;
 
-import javax.sql.DataSource;
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.List;
+import lombok.extern.apachecommons.CommonsLog;
 
 @CommonsLog
 @Component
@@ -35,6 +38,10 @@ public class DatabaseStructureCreator implements CommandLineRunner {
 
     @Autowired
     private DropTablesExecutor dropExecutor;
+
+    public boolean isDropTables() {
+        return dropTables;
+    }
 
     @Value("${winter.drop-tables}")
     private boolean dropTables;

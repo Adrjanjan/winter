@@ -1,14 +1,16 @@
-package pl.design.patterns.winter.statements;
+package pl.design.patterns.winter.statements.executors;
 
-import lombok.extern.apachecommons.CommonsLog;
-import pl.design.patterns.winter.inheritance.mapping.InheritanceMapping;
-import pl.design.patterns.winter.query.DeleteQuery;
-
-import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+
+import javax.sql.DataSource;
+
+import pl.design.patterns.winter.inheritance.mapping.InheritanceMapping;
+import pl.design.patterns.winter.statements.query.DeleteQuery;
+
+import lombok.extern.apachecommons.CommonsLog;
 
 @CommonsLog
 public class DeleteExecutor {

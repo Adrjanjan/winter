@@ -5,22 +5,16 @@ import static org.junit.Assert.assertEquals;
 
 import java.lang.reflect.InvocationTargetException;
 
-import lombok.Getter;
-import lombok.Setter;
 import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 
-import pl.design.patterns.winter.annotations.DatabaseField;
-import pl.design.patterns.winter.annotations.DatabaseTable;
-import pl.design.patterns.winter.annotations.Id;
 import pl.design.patterns.winter.domain.classtable.ClassB;
 import pl.design.patterns.winter.domain.classtable.ClassC;
 import pl.design.patterns.winter.domain.classtable.ClassD;
-import pl.design.patterns.winter.inheritance.InheritanceMappingType;
 import pl.design.patterns.winter.inheritance.mapping.InheritanceMapping;
-import pl.design.patterns.winter.query.InsertQueryBuilder;
-import pl.design.patterns.winter.query.QueryBuildDirector;
 import pl.design.patterns.winter.schemas.DatabaseSchema;
+import pl.design.patterns.winter.statements.query.InsertQueryBuilder;
+import pl.design.patterns.winter.statements.query.QueryBuildDirector;
 
 public class ClassTableInheritanceTest<T> {
 

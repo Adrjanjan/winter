@@ -1,4 +1,4 @@
-package pl.design.patterns.winter.query;
+package pl.design.patterns.winter.statements.query;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;

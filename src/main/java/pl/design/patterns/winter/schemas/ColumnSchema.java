@@ -1,18 +1,18 @@
 package pl.design.patterns.winter.schemas;
 
-import lombok.Data;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+
 import org.springframework.util.StringUtils;
 
 import pl.design.patterns.winter.annotations.DatabaseField;
 import pl.design.patterns.winter.annotations.Id;
 import pl.design.patterns.winter.exceptions.InvalidIdFieldTypeException;
-import pl.design.patterns.winter.query.TypeMapper;
+import pl.design.patterns.winter.statements.query.TypeMapper;
 import pl.design.patterns.winter.utils.NameUtils;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.sql.SQLType;
+import lombok.Data;
 
 @Data
 public class ColumnSchema {

@@ -1,14 +1,14 @@
 
-package pl.design.patterns.winter.query;
+package pl.design.patterns.winter.statements.query;
+
+import java.lang.reflect.Field;
+import java.util.Arrays;
+import java.util.stream.Collectors;
 
 import pl.design.patterns.winter.annotations.Id;
 import pl.design.patterns.winter.inheritance.mapping.InheritanceMapping;
 import pl.design.patterns.winter.schemas.ColumnSchema;
 import pl.design.patterns.winter.schemas.TableSchema;
-
-import java.lang.reflect.Field;
-import java.util.Arrays;
-import java.util.stream.Collectors;
 
 //UPDATE tabela SET (pole1,pole2,...) = (wartosc1,wartosc2,...) WHERE <rownosc id>;
 public class UpdateQuery {

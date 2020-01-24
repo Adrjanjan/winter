@@ -8,13 +8,14 @@ import pl.design.patterns.winter.domain.classtable.ClassC;
 import pl.design.patterns.winter.domain.concretetable.ConcreteC;
 import pl.design.patterns.winter.domain.concretetable.ConcreteD;
 import pl.design.patterns.winter.domain.singletable.SingleC;
+import pl.design.patterns.winter.statements.executors.DropTablesExecutor;
 
 @SpringBootApplication
 public class WinterApplication {
 
-	public static void main(String[] args) {
+    public static void main(String[] args) {
 
-		SpringApplication.run(WinterApplication.class, args);
+        final var context = SpringApplication.run(WinterApplication.class, args);
 
         ConcreteC concreteC = new ConcreteC();
         concreteC.setIntA(1);
@@ -25,8 +26,8 @@ public class WinterApplication {
         Dao<ConcreteC> concreteCDao = OrmManager.getDao(ConcreteC.class);
 
         concreteCDao.insert(concreteC);
-        concreteCDao.findAll().forEach(System.out::println);
-
+        concreteCDao.findAll()
+                .forEach(System.out::println);
 
         ClassC classC = new ClassC();
         classC.setIntA(1);
@@ -37,8 +38,7 @@ public class WinterApplication {
         Dao<ClassC> classCDao = OrmManager.getDao(ClassC.class);
 
         classCDao.insert(classC);
-        classCDao.findAll().forEach(System.out::println);
-
+        // classCDao.findAll().forEach(System.out::println);
 
         SingleC singleC = new SingleC();
         singleC.setIntA(1);
@@ -50,9 +50,9 @@ public class WinterApplication {
         Dao<SingleC> singleCDao = OrmManager.getDao(SingleC.class);
 
         singleCDao.insert(singleC);
-        singleCDao.findAll().forEach(System.out::println);
+        singleCDao.findAll()
+                .forEach(System.out::println);
         System.out.println(singleCDao.findById(1));
-
 
         ConcreteD concreteD = new ConcreteD();
         concreteD.setIntA(1);
@@ -63,10 +63,13 @@ public class WinterApplication {
         Dao<ConcreteD> concreteDDao = OrmManager.getDao(ConcreteD.class);
 
         concreteDDao.insert(concreteD);
-        concreteDDao.findAll().forEach(System.out::println);
+        concreteDDao.findAll()
+                .forEach(System.out::println);
 
-
-
-
-	}
+        if ( context.getBean(DatabaseStructureCreator.class)
+                .isDropTables() ) {
+            context.getBean(DropTablesExecutor.class)
+                    .dropTables();
+        }
+    }
 }

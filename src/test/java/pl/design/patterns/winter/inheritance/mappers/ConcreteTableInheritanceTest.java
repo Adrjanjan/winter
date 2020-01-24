@@ -12,9 +12,9 @@ import pl.design.patterns.winter.domain.concretetable.ConcreteB;
 import pl.design.patterns.winter.domain.concretetable.ConcreteC;
 import pl.design.patterns.winter.domain.concretetable.ConcreteD;
 import pl.design.patterns.winter.inheritance.mapping.InheritanceMapping;
-import pl.design.patterns.winter.query.InsertQueryBuilder;
-import pl.design.patterns.winter.query.QueryBuildDirector;
 import pl.design.patterns.winter.schemas.DatabaseSchema;
+import pl.design.patterns.winter.statements.query.InsertQueryBuilder;
+import pl.design.patterns.winter.statements.query.QueryBuildDirector;
 
 @Disabled
 class ConcreteTableInheritanceTest<T> {

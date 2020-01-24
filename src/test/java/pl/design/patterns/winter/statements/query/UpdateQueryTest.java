@@ -1,8 +1,11 @@
-package pl.design.patterns.winter.query;
+package pl.design.patterns.winter.statements.query;
 
-import lombok.Getter;
-import lombok.Setter;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import java.lang.reflect.InvocationTargetException;
+
 import org.junit.jupiter.api.Test;
+
 import pl.design.patterns.winter.annotations.DatabaseField;
 import pl.design.patterns.winter.annotations.DatabaseTable;
 import pl.design.patterns.winter.annotations.Id;
@@ -12,37 +15,43 @@ import pl.design.patterns.winter.inheritance.mappers.InheritanceMapper;
 import pl.design.patterns.winter.inheritance.mapping.InheritanceMapping;
 import pl.design.patterns.winter.schemas.DatabaseSchema;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import lombok.Getter;
+import lombok.Setter;
 
-public class SelectQueryBuilderTest {
+public class UpdateQueryTest {
 
     @Test
-    void prepareFindById()
-    {
+    void prepareUpdateQuery() throws IllegalAccessException, InvocationTargetException {
         // given
         DatabaseSchema databaseSchema = new DatabaseSchema();
         InheritanceMapper mapper = new ClassTableInheritanceMapper(databaseSchema);
 
         // when
-        InheritanceMapping mappingOfSelectQueryTestClass = mapper.map(SelectQueryTestClass1.class);
+        A testAVariable = new A();
+        testAVariable.setAInt(1);
+        testAVariable.setAString("ala");
+        testAVariable.setADouble(5.55);
+        InheritanceMapping mappingOfUpdateQueryA = mapper.map(A.class);
 
         //then
-        //assertEquals("SELECT * FROM select_query_test_class1 WHERE param1_int = 12;", SelectQueryBuilder.prepareFindById(12, SelectQueryTestClass1.class, mappingOfSelectQueryTestClass));
-        //TODO Inny test zasugerowany przez Adriana
+        assertEquals("UPDATE a SET (AInt,AString,ADouble) = (1,\"ala\",5.55) WHERE a_int = 1;", UpdateQuery.prepareUpdate(testAVariable, UpdateQueryTest.A.class, mappingOfUpdateQueryA));
+
     }
 
     @Getter
     @Setter
     @DatabaseTable(inheritanceType = InheritanceMappingType.CLASS_TABLE)
-    class SelectQueryTestClass1 {
+    public class A {
         @Id
         @DatabaseField
-        public int param1Int;
+        public int AInt;
 
         @DatabaseField
-        public String param2String;
+        public String AString;
 
         @DatabaseField
-        public double param3Double;
+        public double ADouble;
+
     }
+
 }

@@ -1,4 +1,4 @@
-package pl.design.patterns.winter.statements;
+package pl.design.patterns.winter.statements.executors;
 
 import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
@@ -11,10 +11,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import pl.design.patterns.winter.exceptions.CouldNotCreateTableException;
-import pl.design.patterns.winter.query.CreateTableQuery;
-import pl.design.patterns.winter.query.QueryBuildDirector;
-import pl.design.patterns.winter.query.QueryBuilder;
 import pl.design.patterns.winter.schemas.TableSchema;
+import pl.design.patterns.winter.statements.query.CreateTableQuery;
+import pl.design.patterns.winter.statements.query.QueryBuildDirector;
+import pl.design.patterns.winter.statements.query.QueryBuilder;
 
 import lombok.extern.apachecommons.CommonsLog;
 

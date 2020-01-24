@@ -1,13 +1,10 @@
-package pl.design.patterns.winter.query;
+package pl.design.patterns.winter.statements.query;
 
-import java.sql.JDBCType;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.HashMap;
 
 import javax.lang.model.type.NullType;
-
-import com.google.common.collect.HashBiMap;
 
 public class TypeMapper {
     //    private static HashBiMap<Class, JDBCType> javaToSqlTypes;
