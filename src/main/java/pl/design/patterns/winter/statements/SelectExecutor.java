@@ -17,14 +17,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
 
-import javax.sql.DataSource;
-
-import pl.design.patterns.winter.inheritance.mapping.InheritanceMapping;
-import pl.design.patterns.winter.object.assembler.ObjectAssembler;
-import pl.design.patterns.winter.query.SelectQuery;
-
-import lombok.extern.apachecommons.CommonsLog;
-
 @CommonsLog
 public class SelectExecutor {
 
