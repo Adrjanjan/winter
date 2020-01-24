@@ -1,15 +1,14 @@
 package pl.design.patterns.winter.dao;
 
-import java.util.List;
-
-import javax.sql.DataSource;
-
 import pl.design.patterns.winter.inheritance.mapping.InheritanceMapping;
 import pl.design.patterns.winter.object.assembler.ObjectAssembler;
 import pl.design.patterns.winter.statements.executors.DeleteExecutor;
 import pl.design.patterns.winter.statements.executors.InsertExecutor;
 import pl.design.patterns.winter.statements.executors.SelectExecutor;
 import pl.design.patterns.winter.statements.executors.UpdateExecutor;
+
+import javax.sql.DataSource;
+import java.util.List;
 
 public class Dao<T> {
 
@@ -43,7 +42,7 @@ public class Dao<T> {
         updateExecutor.update(obj, clazz);
     }
 
-    public void deleteById(T obj) {
+    public void delete(T obj) {
         deleteExecutor.execute(obj);
     }
 
