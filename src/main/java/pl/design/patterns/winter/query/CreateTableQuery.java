@@ -32,7 +32,7 @@ public class CreateTableQuery extends QueryBuilder {
     @Override
     QueryBuilder setTable() {
         query.append(((TableSchema) object).getTableName())
-                .append(" (\t");
+                .append(" (");
         return this;
     }
 
@@ -74,9 +74,7 @@ public class CreateTableQuery extends QueryBuilder {
     }
 
     @Override
-    QueryBuilder withCondition() {
-        return this;
-    }
+    QueryBuilder withCondition(int id, boolean isConditionSet) { return this; }
 
     @Override
     QueryBuilder compose() {

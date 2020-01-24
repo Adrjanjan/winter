@@ -14,7 +14,7 @@ import pl.design.patterns.winter.schemas.DatabaseSchema;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class SelectQueryTest {
+public class SelectQueryBuilderTest {
 
     @Test
     void prepareFindById()
@@ -27,7 +27,7 @@ public class SelectQueryTest {
         InheritanceMapping mappingOfSelectQueryTestClass = mapper.map(SelectQueryTestClass1.class);
 
         //then
-        assertEquals("SELECT * FROM select_query_test_class1 WHERE param1_int = 12;", SelectQuery.prepareFindById(12, SelectQueryTestClass1.class, mappingOfSelectQueryTestClass));
+        //assertEquals("SELECT * FROM select_query_test_class1 WHERE param1_int = 12;", SelectQueryBuilder.prepareFindById(12, SelectQueryTestClass1.class, mappingOfSelectQueryTestClass));
         //TODO Inny test zasugerowany przez Adriana
     }
 
