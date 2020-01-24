@@ -1,16 +1,18 @@
 package pl.design.patterns.winter.statements.executors;
 
+import lombok.extern.apachecommons.CommonsLog;
+import pl.design.patterns.winter.exceptions.CouldNotInsertIntoTableException;
+import pl.design.patterns.winter.inheritance.mapping.InheritanceMapping;
+import pl.design.patterns.winter.statements.query.DeleteQueryBuilder;
+import pl.design.patterns.winter.statements.query.QueryBuildDirector;
+import pl.design.patterns.winter.statements.query.QueryBuilder;
+
+import javax.sql.DataSource;
+import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import javax.sql.DataSource;
-
-import pl.design.patterns.winter.inheritance.mapping.InheritanceMapping;
-import pl.design.patterns.winter.statements.query.DeleteQuery;
-
-import lombok.extern.apachecommons.CommonsLog;
 
 @CommonsLog
 public class DeleteExecutor {
@@ -28,19 +30,29 @@ public class DeleteExecutor {
         this.inheritanceMapping = inheritanceMapping;
     }
 
-    public ResultSet delete(int id, Class<?> clazz) {
-        String query = DeleteQuery.prepareDelete(id, clazz, inheritanceMapping);
+    public <T> void execute(T object) {
+        log.info("Deleting object of the class: " + object.getClass());
+
+        QueryBuilder builder = new DeleteQueryBuilder(inheritanceMapping);
+        QueryBuildDirector<T> queryBuildDirector = new QueryBuildDirector<>(builder);
+        String query;
+        try {
+            query = queryBuildDirector.withObject(object)
+                    .build();
+        } catch (InvocationTargetException | IllegalAccessException e) {
+            throw new CouldNotInsertIntoTableException(String.format("Could not delete object %s", object.toString()), e);
+        }
 
         try (Connection conn = dataSource.getConnection()) {
-
             Statement stmt = conn.createStatement();
-            log.info("Wykonuje delete gdzie (" + id + ")");
-            stmt.executeUpdate(query);
-            return stmt.getResultSet();
-
+            stmt.execute(query);
+            log.info("Deleted object of class: " + object.getClass()
+                    .toString());
         } catch (SQLException e) {
-            log.error("Nie udalo sie wykonać  delete gdzie id =("+id+")");
-            throw new RuntimeException(e);
+            log.error("Could not delete object of class: " + object.getClass()
+                    .toString());
+            throw new CouldNotInsertIntoTableException(String.format("Could not delete object %s", object.toString()), e);
+
         }
     }
 }

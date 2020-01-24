@@ -9,6 +9,7 @@ import pl.design.patterns.winter.annotations.Id;
 import pl.design.patterns.winter.inheritance.mapping.InheritanceMapping;
 import pl.design.patterns.winter.schemas.ColumnSchema;
 import pl.design.patterns.winter.schemas.TableSchema;
+import pl.design.patterns.winter.utils.FieldsUtil;
 
 //UPDATE tabela SET (pole1,pole2,...) = (wartosc1,wartosc2,...) WHERE <rownosc id>;
 public class UpdateQuery {
@@ -18,36 +19,51 @@ public class UpdateQuery {
         sb.append("UPDATE ");
 
         // wyciaganie nazwy tabeli cz.1
-        Field fieldWithId = Arrays.stream(clazz.getDeclaredFields())
+        Field fieldWithId = FieldsUtil.getAllFieldsInClassHierarchy(clazz)
+                .stream()
                 .filter(field -> field.isAnnotationPresent(Id.class))
-                .collect(Collectors.toList()).get(0);
+                .findFirst()
+                .orElseThrow(RuntimeException::new);
+
         // wyciaganie nazwy tabeli cz.2
         TableSchema tableWithIdField = inheritanceMapping.getTableSchema(fieldWithId.getName());
         sb.append(tableWithIdField.getTableName());
 
         sb.append(" SET (");
-        for (Field field : clazz.getFields()) {
+        Object objectForLoop;
+        for (ColumnSchema column : tableWithIdField.getColumns()) {
             //TODO Update ID?
             //Czy chcemy updatowac Id-ki ...?
-            sb.append(field.getName())
-                    .append(",");
+            try {
+                objectForLoop = column.get(objectToUpdate);
+            } catch (Exception e) {
+                continue;
+            }
+            sb.append(column.getColumnName())
+                    .append(", ");
         }
 
-        //usuwanie ostatniego ","
-        sb.deleteCharAt(sb.length() - 1);
+        sb.delete(sb.length() - 2, sb.length() - 1);
         sb.append(") = (");
 
         //uzyskanie wartosci danych pol
-        Object objectForLoop;
         for (ColumnSchema columnSchema : tableWithIdField.getColumns()) {
             //TODO Update ID?
             //updatowanie Id-kow ... ?
-            objectForLoop = columnSchema.get(objectToUpdate);
+            try {
+                objectForLoop = columnSchema.get(objectToUpdate);
+            } catch (Exception e) {
+                continue;
+            }
+            if (objectForLoop == null) {
+                sb.append("NULL,");
+                continue;
+            }
             if (objectForLoop.getClass() == String.class)
-                sb.append("\"");
+                sb.append("\'");
             sb.append(objectForLoop);
             if (objectForLoop.getClass() == String.class)
-                sb.append("\"");
+                sb.append("\'");
             sb.append(",");
         }
 
