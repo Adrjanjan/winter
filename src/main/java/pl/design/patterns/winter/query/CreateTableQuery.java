@@ -1,7 +1,5 @@
 package pl.design.patterns.winter.query;
 
-import java.sql.JDBCType;
-
 import pl.design.patterns.winter.exceptions.InvalidObjectClassException;
 import pl.design.patterns.winter.schemas.ColumnSchema;
 import pl.design.patterns.winter.schemas.TableSchema;
@@ -46,7 +44,7 @@ public class CreateTableQuery extends QueryBuilder {
             if ( columnSchema.isGeneratedId() ) {
                 query.append("SERIAL");
             } else {
-                sb.append(columnSchema.getSqlType() == "VARCHAR" ? "TEXT"
+                query.append(columnSchema.getSqlType() == "VARCHAR" ? "TEXT"
                         : columnSchema.getSqlType());
             }
 
