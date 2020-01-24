@@ -35,6 +35,9 @@ public class ColumnSchema {
 
     private boolean isForeignKey;
 
+    public ColumnSchema() {
+    }
+
     public ColumnSchema(Field field) {
         final var databaseFieldAnnotation = field.getAnnotation(DatabaseField.class);
         this.columnName = NameUtils.extractColumnName(field);

@@ -5,7 +5,9 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import pl.design.patterns.winter.inheritance.mapping.InheritanceMapping;
+import pl.design.patterns.winter.schemas.ColumnSchema;
 import pl.design.patterns.winter.schemas.DatabaseSchema;
+import pl.design.patterns.winter.schemas.DiscriminatorColumnSchema;
 import pl.design.patterns.winter.schemas.TableSchema;
 import pl.design.patterns.winter.utils.NameUtils;
 
@@ -23,17 +25,26 @@ public class SingleTableInheritanceMapper extends InheritanceMapper {
         Class<? super T> superclass = clazz.getSuperclass();
         InheritanceMapping inheritanceMapping;
         if ( superclass.equals(Object.class) ) {
+
             List<Field> fields = new ArrayList<>(Arrays.asList(clazz.getDeclaredFields()));
             fields = fields.stream()
                     .filter(f -> !f.getName()
                             .startsWith("this"))
                     .collect(Collectors.toList());
 
+            DiscriminatorColumnSchema discriminatorColumnSchema = new DiscriminatorColumnSchema(clazz, NameUtils.extractColumnDicriminatorColumnName(clazz),
+                    String.class.toString());
+            Set<ColumnSchema> columnSchemas = createColumnSchemas(fields);
+            columnSchemas.add(discriminatorColumnSchema);
+            Map<Class<?>, String> discriminators = new HashMap<>();
+            discriminators.put(clazz, NameUtils.extractColumnDicriminatorValue(clazz));
+
             TableSchema tableSchema = TableSchema.builder()
                     .clazz(clazz)
                     .tableName(NameUtils.extractTableName(clazz))
-                    .columns(createColumnSchemas(fields))
+                    .columns(columnSchemas)
                     .idField(getIdField(fields))
+                    .discriminatorValues(discriminators)
                     .build();
 
             final Map<String, TableSchema> mapping = new HashMap<>();
@@ -57,6 +68,7 @@ public class SingleTableInheritanceMapper extends InheritanceMapper {
 
             TableSchema tableSchema = inheritanceMapping.getTableSchema(superclass.getFields()[0].getName());
             tableSchema.addColumns(createColumnSchemas(fields));
+            tableSchema.addDiscriminatorValue(clazz, NameUtils.extractColumnDicriminatorValue(clazz));
             final Map<String, TableSchema> mapping = new HashMap<>();
             fields.stream()
                     .map(Field::getName)
