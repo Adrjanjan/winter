@@ -1,5 +1,6 @@
 package pl.design.patterns.winter.statements.executors;
 
+import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -7,8 +8,11 @@ import java.sql.Statement;
 
 import javax.sql.DataSource;
 
+import pl.design.patterns.winter.exceptions.CouldNotSelectFromTableException;
 import pl.design.patterns.winter.inheritance.mapping.InheritanceMapping;
-import pl.design.patterns.winter.statements.query.UpdateQuery;
+import pl.design.patterns.winter.statements.query.QueryBuildDirector;
+import pl.design.patterns.winter.statements.query.QueryBuilder;
+import pl.design.patterns.winter.statements.query.UpdateQueryBuilder;
 
 import lombok.extern.apachecommons.CommonsLog;
 
@@ -27,8 +31,18 @@ public class UpdateExecutor {
         this.inheritanceMapping = inheritanceMapping;
     }
 
-    public <T> ResultSet update(T objectToUpdate, Class<T> clazz) {
-        String query = UpdateQuery.prepareUpdate(objectToUpdate, clazz, inheritanceMapping);
+    public <T> ResultSet update(T objectToUpdate) {
+
+        QueryBuilder builder = new UpdateQueryBuilder(inheritanceMapping);
+        QueryBuildDirector<T> queryBuildDirector = new QueryBuildDirector<>(builder);
+        String query;
+
+        try {
+            query = queryBuildDirector.withObject(objectToUpdate)
+                    .build();
+        } catch (InvocationTargetException | IllegalAccessException e) {
+            throw new CouldNotSelectFromTableException(String.format("Could not update object %s", objectToUpdate.toString()), e);
+        }
 
         try (Connection conn = dataSource.getConnection()) {
 

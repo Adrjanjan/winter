@@ -26,6 +26,8 @@ public class WinterApplication {
         Dao<ConcreteC> concreteCDao = OrmManager.getDao(ConcreteC.class);
 
         concreteCDao.insert(concreteC);
+        concreteC.setStringA("new string a");
+        concreteCDao.update(concreteC);
         concreteCDao.findAll()
                 .forEach(System.out::println);
         System.out.println(concreteCDao.findById(1));
@@ -40,6 +42,8 @@ public class WinterApplication {
         Dao<ClassC> classCDao = OrmManager.getDao(ClassC.class);
 
         classCDao.insert(classC);
+        classC.setStringA("new string a");
+        classCDao.update(classC);
         classCDao.findAll().forEach(System.out::println);
         System.out.println(classCDao.findById(1));
         classCDao.deleteById(classC.getIntA());
@@ -54,6 +58,8 @@ public class WinterApplication {
         Dao<SingleC> singleCDao = OrmManager.getDao(SingleC.class);
 
         singleCDao.insert(singleC);
+        singleC.setStringA("new string a");
+        singleCDao.update(singleC);
         singleCDao.findAll()
                 .forEach(System.out::println);
         System.out.println(singleCDao.findById(1));

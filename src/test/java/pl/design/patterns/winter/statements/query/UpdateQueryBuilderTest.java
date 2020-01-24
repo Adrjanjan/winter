@@ -18,7 +18,7 @@ import pl.design.patterns.winter.schemas.DatabaseSchema;
 import lombok.Getter;
 import lombok.Setter;
 
-public class UpdateQueryTest {
+public class UpdateQueryBuilderTest<T> {
 
     @Test
     void prepareUpdateQuery() throws IllegalAccessException, InvocationTargetException {
@@ -33,8 +33,12 @@ public class UpdateQueryTest {
         testAVariable.setADouble(5.55);
         InheritanceMapping mappingOfUpdateQueryA = mapper.map(A.class);
 
+        QueryBuilder builder = new UpdateQueryBuilder(mappingOfUpdateQueryA);
+        QueryBuildDirector<T> queryBuildDirector = new QueryBuildDirector<>(builder);
+        String query = queryBuildDirector.withObject((T)testAVariable)
+                .build();
         //then
-        assertEquals("UPDATE a SET (AInt,AString,ADouble) = (1,\"ala\",5.55) WHERE a_int = 1;", UpdateQuery.prepareUpdate(testAVariable, UpdateQueryTest.A.class, mappingOfUpdateQueryA));
+        assertEquals("UPDATE a SET (AInt,AString,ADouble) = (1,\"ala\",5.55) WHERE a_int = 1;", query);
 
     }
 

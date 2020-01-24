@@ -40,7 +40,7 @@ public class Dao<T> {
     }
 
     public void update(T obj) {
-        updateExecutor.update(obj, clazz);
+        updateExecutor.update(obj);
     }
 
     public void deleteById(int id) {
