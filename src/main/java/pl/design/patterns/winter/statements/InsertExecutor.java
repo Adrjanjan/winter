@@ -7,9 +7,6 @@ import java.sql.Statement;
 
 import javax.sql.DataSource;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
 import pl.design.patterns.winter.exceptions.CouldNotInsertIntoTableException;
 import pl.design.patterns.winter.inheritance.mapping.InheritanceMapping;
 import pl.design.patterns.winter.query.InsertQueryBuilder;
@@ -19,14 +16,21 @@ import pl.design.patterns.winter.query.QueryBuilder;
 import lombok.extern.apachecommons.CommonsLog;
 
 @CommonsLog
-@Component
 public class InsertExecutor {
-    @Autowired
     private DataSource dataSource;
 
     private InheritanceMapping inheritanceMapping;
 
     public void setInheritanceMapping(InheritanceMapping inheritanceMapping) {
+        this.inheritanceMapping = inheritanceMapping;
+    }
+
+    public void setDataSource(DataSource dataSource) {
+        this.dataSource = dataSource;
+    }
+
+    public InsertExecutor(DataSource dataSource, InheritanceMapping inheritanceMapping) {
+        this.dataSource = dataSource;
         this.inheritanceMapping = inheritanceMapping;
     }
 

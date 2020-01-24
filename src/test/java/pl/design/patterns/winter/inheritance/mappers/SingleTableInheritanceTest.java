@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertSame;
 import java.lang.reflect.InvocationTargetException;
 
 import org.junit.Assert;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import pl.design.patterns.winter.domain.singletable.SingleB;
@@ -16,6 +17,7 @@ import pl.design.patterns.winter.query.InsertQueryBuilder;
 import pl.design.patterns.winter.query.QueryBuildDirector;
 import pl.design.patterns.winter.schemas.DatabaseSchema;
 
+@Disabled
 public class SingleTableInheritanceTest<T> {
 
     @Test

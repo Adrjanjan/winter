@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.lang.reflect.InvocationTargetException;
 
 import org.junit.Assert;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import pl.design.patterns.winter.domain.concretetable.ConcreteB;
@@ -13,9 +14,9 @@ import pl.design.patterns.winter.domain.concretetable.ConcreteD;
 import pl.design.patterns.winter.inheritance.mapping.InheritanceMapping;
 import pl.design.patterns.winter.query.InsertQueryBuilder;
 import pl.design.patterns.winter.query.QueryBuildDirector;
-import pl.design.patterns.winter.query.QueryBuilder;
 import pl.design.patterns.winter.schemas.DatabaseSchema;
 
+@Disabled
 class ConcreteTableInheritanceTest<T> {
 
     @Test

@@ -20,7 +20,8 @@ public class DatabaseSchema {
     }
 
     public InheritanceMapping addMapping(Class<?> clazz, InheritanceMapping inheritanceMapping) {
-        return classToTable.put(clazz, inheritanceMapping);
+        classToTable.put(clazz, inheritanceMapping);
+        return inheritanceMapping;
     }
 
     public Set<TableSchema> getAllTables() {

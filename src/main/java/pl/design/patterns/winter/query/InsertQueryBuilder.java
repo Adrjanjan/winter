@@ -77,7 +77,13 @@ public class InsertQueryBuilder extends QueryBuilder {
             var stringBuilder = mapTableSchemaToBuilder.get(tableSchema);
             for (ColumnSchema column : tableSchema.getColumns()) {
                 Class c = column.getJavaType();
-                Object o = column.get(object);
+                Object o;
+                try {
+                    o = column.get(object);
+                } catch (Exception e) {
+                    stringBuilder.append("NULL, ");
+                    continue;
+                }
 
                 if ( o == null ) {
                     stringBuilder.append(parseNullableField(object, column));
