@@ -2,6 +2,7 @@ package pl.design.patterns.winter;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+
 import pl.design.patterns.winter.dao.Dao;
 import pl.design.patterns.winter.domain.classtable.ClassC;
 import pl.design.patterns.winter.domain.concretetable.ConcreteC;
@@ -50,7 +51,7 @@ public class WinterApplication {
 
         singleCDao.insert(singleC);
         singleCDao.findAll().forEach(System.out::println);
-        System.out.println(singleCDao.findById(1).getStringC());
+        System.out.println(singleCDao.findById(1));
 
 
         ConcreteD concreteD = new ConcreteD();

@@ -1,7 +1,14 @@
 package pl.design.patterns.winter.statements;
 
-import lombok.extern.apachecommons.CommonsLog;
-import pl.design.patterns.winter.exceptions.CouldNotInsertIntoTableException;
+import java.lang.reflect.InvocationTargetException;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.List;
+
+import javax.sql.DataSource;
+
 import pl.design.patterns.winter.exceptions.CouldNotSelectFromTableException;
 import pl.design.patterns.winter.inheritance.mapping.InheritanceMapping;
 import pl.design.patterns.winter.object.assembler.ObjectAssembler;
@@ -9,13 +16,7 @@ import pl.design.patterns.winter.query.QueryBuildDirector;
 import pl.design.patterns.winter.query.QueryBuilder;
 import pl.design.patterns.winter.query.SelectQueryBuilder;
 
-import javax.sql.DataSource;
-import java.lang.reflect.InvocationTargetException;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.List;
+import lombok.extern.apachecommons.CommonsLog;
 
 @CommonsLog
 public class SelectExecutor {
@@ -56,6 +57,7 @@ public class SelectExecutor {
 
             log.info("Wykonano select findById(" + id + ")");
             ResultSet resultSet = stmt.executeQuery(query);
+            resultSet.next();
             return (T) objectAssembler.assemble(clazz, resultSet);
 
         } catch (SQLException e) {
