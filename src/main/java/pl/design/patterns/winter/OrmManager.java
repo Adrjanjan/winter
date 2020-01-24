@@ -9,9 +9,9 @@ import java.util.Map;
 @CommonsLog
 public class OrmManager {
 
-    public static Map<Class<?>, Dao<?>> daos = new HashMap<>();
+    private static Map<Class<?>, Dao<?>> daos = new HashMap<>();
 
-    public static void addDao(Class<?> c, Dao<?> dao) {
+    static void addDao(Class<?> c, Dao<?> dao) {
         log.info(String.format("Dodaje nowe Dao dla klasy %s", c.getName()));
         daos.put(c, dao);
     }
