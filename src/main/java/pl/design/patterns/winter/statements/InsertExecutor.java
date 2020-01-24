@@ -7,44 +7,56 @@ import java.sql.Statement;
 
 import javax.sql.DataSource;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
+import pl.design.patterns.winter.exceptions.CouldNotInsertIntoTableException;
+import pl.design.patterns.winter.inheritance.mapping.InheritanceMapping;
 import pl.design.patterns.winter.query.InsertQueryBuilder;
+import pl.design.patterns.winter.query.QueryBuildDirector;
 import pl.design.patterns.winter.query.QueryBuilder;
-import pl.design.patterns.winter.schemas.DatabaseSchema;
 
 import lombok.extern.apachecommons.CommonsLog;
 
 @CommonsLog
-@Component
 public class InsertExecutor {
-    @Autowired
     private DataSource dataSource;
 
-    @Autowired
-    private DatabaseSchema databaseSchema;
+    private InheritanceMapping inheritanceMapping;
 
-    public <T> void execute(T object) throws InvocationTargetException, IllegalAccessException {
-        log.info("Insert klasy : " + object.getClass()
+    public void setInheritanceMapping(InheritanceMapping inheritanceMapping) {
+        this.inheritanceMapping = inheritanceMapping;
+    }
+
+    public void setDataSource(DataSource dataSource) {
+        this.dataSource = dataSource;
+    }
+
+    public InsertExecutor(DataSource dataSource, InheritanceMapping inheritanceMapping) {
+        this.dataSource = dataSource;
+        this.inheritanceMapping = inheritanceMapping;
+    }
+
+    public <T> void execute(T object) {
+        log.info("Insert object of class: " + object.getClass()
                 .getName());
-        var inheritanceMapping = databaseSchema.getMapping(object.getClass());
+
         QueryBuilder builder = new InsertQueryBuilder(inheritanceMapping);
-        String query = builder.prepare(object);
+        QueryBuildDirector<T> queryBuildDirector = new QueryBuildDirector<>(builder);
+        String query;
+        try {
+            query = queryBuildDirector.withObject(object)
+                    .build();
+        } catch (InvocationTargetException | IllegalAccessException e) {
+            throw new CouldNotInsertIntoTableException(String.format("Could not insert object %s", object.toString()), e);
+        }
 
         try (Connection conn = dataSource.getConnection()) {
-
-            // TODO: mozna dodac najpierw sprawdzenie
             Statement stmt = conn.createStatement();
             stmt.execute(query);
-            log.info("Dodano obiekt klasy: " + object.getClass()
+            log.info("Inserted  object of class: " + object.getClass()
                     .toString());
-
         } catch (SQLException e) {
-
-            log.error("Nie udalo sie dodać obiektu klasy " + object.getClass()
+            log.error("Could not insert object of class: " + object.getClass()
                     .toString());
-            throw new RuntimeException(e);
+            throw new CouldNotInsertIntoTableException(String.format("Could not insert object %s", object.toString()), e);
 
         }
     }

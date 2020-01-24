@@ -8,60 +8,91 @@ import pl.design.patterns.winter.exceptions.NonNullableFieldIsNull;
 import pl.design.patterns.winter.inheritance.mapping.InheritanceMapping;
 import pl.design.patterns.winter.schemas.ColumnSchema;
 import pl.design.patterns.winter.schemas.TableSchema;
+import pl.design.patterns.winter.utils.FieldsUtil;
 
 public class InsertQueryBuilder extends QueryBuilder {
 
     private InheritanceMapping inheritanceMapping;
 
+    Map<TableSchema, StringBuilder> mapTableSchemaToBuilder;
+
+    Set<TableSchema> setTableSchema;
+
+    Object object;
+
+    List<Field> fields;
+
     public InsertQueryBuilder(InheritanceMapping inheritanceMapping) {
         this.inheritanceMapping = inheritanceMapping;
+        this.query = new StringBuilder();
+        this.mapTableSchemaToBuilder = new HashMap<>();
+        this.setTableSchema = new HashSet<>();
+        this.fields = new LinkedList<>();
     }
 
-    //TODO działa dla concreteTableInheritance, Single wymaga poprawy budowania TableSchema
     @Override
-    public <T> String prepare(T object) throws InvocationTargetException, IllegalAccessException {
-        StringBuilder sb = new StringBuilder();
-        Map<TableSchema, StringBuilder> mapTableSchemaToBuilder = new HashMap<>();
-        Set<TableSchema> setTableSchema = new HashSet<>();
+    <T> QueryBuilder withObject(T object) {
+        this.object = object;
+        fields = FieldsUtil.getAllFieldsInClassHierarchy(object.getClass());
+        return this;
+    }
 
-        List<Field> fields = getFieldsToIncludeInQuery(object);
-
-        //Zapisujemy mapę(tabela->StringBuilder) oraz zbór tabel
-        for(Field field : fields) {
+    @Override
+    QueryBuilder createOperation() {
+        for (Field field : fields) {
             mapTableSchemaToBuilder.put(inheritanceMapping.getTableSchema(field.getName()), new StringBuilder());
             setTableSchema.add(inheritanceMapping.getTableSchema(field.getName()));
         }
+        setTableSchema.forEach(tableSchema -> mapTableSchemaToBuilder.get(tableSchema)
+                .append("INSERT INTO "));
 
-        //Dla każdej tabeli (w której wylądował) obiekt
-        for(var tableSchema: setTableSchema) {
-            //bierzemy Buildera "pod polecenia"
+        return this;
+    }
+
+    @Override
+    QueryBuilder setTable() {
+        setTableSchema.forEach(tableSchema -> mapTableSchemaToBuilder.get(tableSchema)
+                .append(tableSchema.getTableName())
+                .append(" ( "));
+        return this;
+    }
+
+    @Override
+    QueryBuilder setFields() {
+        for (var tableSchema : setTableSchema) {
             var stringBuilder = mapTableSchemaToBuilder.get(tableSchema);
-            stringBuilder.append("INSERT INTO ")
-                    .append(tableSchema.getTableName())
-                    .append(" ( ");
-
-            //Kolumny pod polecenia
             for (ColumnSchema column : tableSchema.getColumns()) {
                 stringBuilder.append(column.getColumnName())
                         .append(", ");
             }
             stringBuilder.delete(stringBuilder.length() - 2, stringBuilder.length() - 1);
             stringBuilder.append(") VALUES ( ");
+        }
 
-            //TODO to powinno byc lepiej zrobione ale nie mam pomysłu jak
-            //bo dla każdego typu musielibyśmy zrobić rzutowanie
-            //wartosc pol obiektu
+        return this;
+    }
+
+    @Override
+    QueryBuilder setValues() throws InvocationTargetException, IllegalAccessException {
+        for (var tableSchema : setTableSchema) {
+            var stringBuilder = mapTableSchemaToBuilder.get(tableSchema);
             for (ColumnSchema column : tableSchema.getColumns()) {
                 Class c = column.getJavaType();
-                Object o = column.get(object);
+                Object o;
+                try {
+                    o = column.get(object);
+                } catch (Exception e) {
+                    stringBuilder.append("NULL, ");
+                    continue;
+                }
 
                 if ( o == null ) {
                     stringBuilder.append(parseNullableField(object, column));
                 } else if ( o.getClass() == String.class ) {
-                    stringBuilder.append("\"")
+                    stringBuilder.append("'")
                             .append(c.cast(o)
                                     .toString())
-                            .append("\", ");
+                            .append("', ");
                 } else {
                     stringBuilder.append(o.toString())
                             .append(", ");
@@ -70,13 +101,21 @@ public class InsertQueryBuilder extends QueryBuilder {
 
             stringBuilder.delete(stringBuilder.length() - 2, stringBuilder.length() - 1);
             stringBuilder.append(");");
-
-            //łączenie stringBuilderów w jedno wieksze polecenie
-            sb.append(stringBuilder.toString())
-                    .append(" ");
         }
+        return this;
+    }
 
-        return sb.toString();
+    @Override
+    QueryBuilder withCondition(int id, boolean isConditionSet) {
+        return this;
+    }
+
+    @Override
+    QueryBuilder compose() {
+        setTableSchema.forEach(tableSchema -> query.append(mapTableSchemaToBuilder.get(tableSchema)
+                .toString())
+                .append(" "));
+        return this;
     }
 
     private <T> String parseNullableField(T object, ColumnSchema column) {

@@ -1,9 +1,6 @@
 package pl.design.patterns.winter;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.List;
-
+import lombok.extern.apachecommons.CommonsLog;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -11,15 +8,17 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
 import org.springframework.core.type.filter.AnnotationTypeFilter;
 import org.springframework.stereotype.Component;
-
 import pl.design.patterns.winter.annotations.DatabaseTable;
+import pl.design.patterns.winter.dao.Dao;
 import pl.design.patterns.winter.inheritance.mappers.InheritanceMapper;
-import pl.design.patterns.winter.inheritance.mapping.InheritanceMapping;
 import pl.design.patterns.winter.schemas.DatabaseSchema;
 import pl.design.patterns.winter.statements.CreateTableExecutor;
 import pl.design.patterns.winter.statements.DropTablesExecutor;
 
-import lombok.extern.apachecommons.CommonsLog;
+import javax.sql.DataSource;
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.List;
 
 @CommonsLog
 @Component
@@ -27,6 +26,9 @@ public class DatabaseStructureCreator implements CommandLineRunner {
 
     @Autowired
     private DatabaseSchema databaseSchema;
+
+    @Autowired
+    private DataSource dataSource;
 
     @Autowired
     private CreateTableExecutor createExecutor;
@@ -48,14 +50,19 @@ public class DatabaseStructureCreator implements CommandLineRunner {
     private void prepareDatabase() throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
         List<Class<?>> annotatedClasses = findAnnotatedClasses();
         for (Class<?> clazz : annotatedClasses) {
-
             InheritanceMapper mapper = clazz.getAnnotation(DatabaseTable.class)
                     .inheritanceType()
                     .getMappingClass()
                     .getConstructor(DatabaseSchema.class)
                     .newInstance(databaseSchema);
-            InheritanceMapping mapping = mapper.map(clazz);
-            databaseSchema.addTableSchemas(mapping.getAllTableSchemas());
+            mapper.map(clazz);
+        }
+
+        for (Class<?> clazz : annotatedClasses) {
+            databaseSchema.addTableSchemas(databaseSchema.getMapping(clazz)
+                    .getAllTableSchemas());
+
+            OrmManager.addDao(clazz, new Dao<>(dataSource, clazz, databaseSchema.getMapping(clazz)));
 
         }
 
