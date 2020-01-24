@@ -1,19 +1,21 @@
 package pl.design.patterns.winter.statements;
 
+import lombok.extern.apachecommons.CommonsLog;
+import pl.design.patterns.winter.exceptions.CouldNotInsertIntoTableException;
+import pl.design.patterns.winter.exceptions.CouldNotSelectFromTableException;
+import pl.design.patterns.winter.inheritance.mapping.InheritanceMapping;
+import pl.design.patterns.winter.object.assembler.ObjectAssembler;
+import pl.design.patterns.winter.query.QueryBuildDirector;
+import pl.design.patterns.winter.query.QueryBuilder;
+import pl.design.patterns.winter.query.SelectQueryBuilder;
+
+import javax.sql.DataSource;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
-
-import javax.sql.DataSource;
-
-import pl.design.patterns.winter.inheritance.mapping.InheritanceMapping;
-import pl.design.patterns.winter.object.assembler.ObjectAssembler;
-import pl.design.patterns.winter.query.SelectQuery;
-
-import lombok.extern.apachecommons.CommonsLog;
 
 @CommonsLog
 public class SelectExecutor {
@@ -36,14 +38,24 @@ public class SelectExecutor {
 
     @SuppressWarnings("unchecked")
     public <T> T findById(int id, Class<T> clazz) {
-        String query = SelectQuery.prepareFindById(id, clazz, inheritanceMapping);
+
+        QueryBuilder builder = new SelectQueryBuilder(inheritanceMapping);
+        QueryBuildDirector<T> queryBuildDirector = new QueryBuildDirector<>(builder);
+        String query;
+
+        try {
+            query = queryBuildDirector.withObject((T)clazz).withCondition(id)
+                    .build();
+        } catch (InvocationTargetException | IllegalAccessException e) {
+            throw new CouldNotSelectFromTableException(String.format("Could not select object with id %d class %s", id, clazz.getName()), e);
+        }
 
         try (Connection conn = dataSource.getConnection()) {
 
             Statement stmt = conn.createStatement();
-            stmt.executeUpdate(query);
+
             log.info("Wykonano select findById(" + id + ")");
-            ResultSet resultSet = stmt.getResultSet();
+            ResultSet resultSet = stmt.executeQuery(query);
             return (T) objectAssembler.assemble(clazz, resultSet);
 
         } catch (SQLException e) {
@@ -57,8 +69,16 @@ public class SelectExecutor {
 
     @SuppressWarnings("unchecked")
     public <T> List<T> findAll(Class<T> clazz) {
-        SelectQuery selectQuery = new SelectQuery();
-        String query = selectQuery.prepareFindAll(clazz, inheritanceMapping);
+        QueryBuilder builder = new SelectQueryBuilder(inheritanceMapping);
+        QueryBuildDirector<T> queryBuildDirector = new QueryBuildDirector<>(builder);
+        String query;
+
+        try {
+            query = queryBuildDirector.withObject((T)clazz)
+                    .build();
+        } catch (InvocationTargetException | IllegalAccessException e) {
+            throw new CouldNotSelectFromTableException(String.format("Could not select all objects class %s", clazz.getName()), e);
+        }
 
         try (Connection conn = dataSource.getConnection()) {
             Statement stmt = conn.createStatement();

@@ -106,7 +106,7 @@ public class InsertQueryBuilder extends QueryBuilder {
     }
 
     @Override
-    QueryBuilder withCondition() {
+    QueryBuilder withCondition(int id, boolean isConditionSet) {
         return this;
     }
 

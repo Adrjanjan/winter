@@ -15,7 +15,7 @@ public abstract class QueryBuilder {
 
     abstract QueryBuilder setValues() throws InvocationTargetException, IllegalAccessException;
 
-    abstract QueryBuilder withCondition();
+    abstract QueryBuilder withCondition(int id, boolean isConditionSet);
 
     abstract QueryBuilder compose();
 
