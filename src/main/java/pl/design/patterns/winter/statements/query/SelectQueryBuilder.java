@@ -1,11 +1,16 @@
 package pl.design.patterns.winter.statements.query;
 
 import java.lang.reflect.Field;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import pl.design.patterns.winter.annotations.Id;
 import pl.design.patterns.winter.exceptions.NoIdFieldException;
 import pl.design.patterns.winter.inheritance.mapping.InheritanceMapping;
+import pl.design.patterns.winter.schemas.ColumnSchema;
 import pl.design.patterns.winter.schemas.TableSchema;
 import pl.design.patterns.winter.utils.FieldsUtil;
 
@@ -18,29 +23,16 @@ public class SelectQueryBuilder extends QueryBuilder {
 
     TableSchema tableSchema;
 
+    Set<TableSchema> setTableSchema;
+
+    List<Field> fields;
+
     public SelectQueryBuilder(InheritanceMapping inheritanceMapping)
     {
         this.inheritanceMapping = inheritanceMapping;
         this.query = new StringBuilder();
-    }
-
-    public String prepareFindAll(Class<?> clazz, InheritanceMapping inheritanceMapping) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("SELECT * FROM ");
-
-        // z wszystkich pol klasy wybieram tylko te ktore byly mapowane do BD i biore pierwsze do wyszukania
-        this.field = FieldsUtil.getAllFieldsInClassHierarchy(clazz)
-                .stream()
-                .filter(f -> f.isAnnotationPresent(Id.class))
-                .findFirst()
-                .orElseThrow(NoIdFieldException::new);
-
-        //inheritance mapping get tablice ktora ma pole fieldInMapping.getName() a nastepnie nazwe tej tablicy do string buildera
-        sb.append(inheritanceMapping.getTableSchema(this.field.getName()).getTableName());
-
-        // TODO Class-Table
-
-        return sb.toString();
+        this.setTableSchema = new HashSet<>();
+        this.fields = new LinkedList<>();
     }
 
     @Override
@@ -51,13 +43,30 @@ public class SelectQueryBuilder extends QueryBuilder {
 
     @Override
     QueryBuilder createOperation() {
-        query.append("SELECT * FROM ");
+        query.append("SELECT ");
+
+        fields = FieldsUtil.getAllFieldsInClassHierarchy((Class<?>) object);
+        for (Field field : fields) {
+            setTableSchema.add(inheritanceMapping.getTableSchema(field.getName()));
+        }
+
+        for(TableSchema schema: setTableSchema) {
+            for(ColumnSchema colSchema : schema.getColumns()) {
+                query.append(schema.getTableName())
+                        .append(".")
+                        .append(colSchema.getColumnName())
+                        .append(", ");
+            }
+        }
+
+        query.delete(query.length() - 2, query.length() - 1)
+                .append(" FROM ");
         return this;
     }
 
     @Override
     QueryBuilder setTable() {
-        field = FieldsUtil.getAllFieldsInClassHierarchy((Class<?>) object)
+        field = fields
                 .stream()
                 .filter(f -> f.isAnnotationPresent(Id.class))
                 .collect(Collectors.toList())
@@ -66,7 +75,28 @@ public class SelectQueryBuilder extends QueryBuilder {
         tableSchema = inheritanceMapping
                 .getTableSchema(field.getName());
 
-        query.append(tableSchema.getTableName());
+        query.append(tableSchema.getTableName())
+                .append(" ");
+
+        fields.remove(field);
+
+        setTableSchema.clear();
+        for (Field field : fields) {
+            setTableSchema.add(inheritanceMapping.getTableSchema(field.getName()));
+        }
+
+        setTableSchema.remove(tableSchema);
+
+        for(TableSchema schema : setTableSchema) {
+            query.append("JOIN ")
+                    .append(schema.getTableName())
+                    .append(" ON ")
+                    .append(tableSchema.getTableName()+"."+tableSchema.getIdField().getColumnName())
+                    .append(" = ")
+                    .append(schema.getTableName()+"."+schema.getIdField().getColumnName())
+                    .append(" ");
+        }
+
         return this;
     }
 
@@ -83,10 +113,12 @@ public class SelectQueryBuilder extends QueryBuilder {
     @Override
     QueryBuilder withCondition(int id, boolean isConditionSet) {
         if(isConditionSet) {
-            query.append(" WHERE ");
-            query.append(tableSchema.getIdField().getColumnName());
-            query.append(" = ");
-            query.append(id);
+            query.append(" WHERE ")
+                    .append(tableSchema.getTableName())
+                    .append(".")
+                    .append(tableSchema.getIdField().getColumnName())
+                    .append(" = ")
+                    .append(id);
         }
         query.append(";");
         return this;

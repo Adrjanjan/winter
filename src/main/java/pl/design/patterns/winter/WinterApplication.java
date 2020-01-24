@@ -38,7 +38,8 @@ public class WinterApplication {
         Dao<ClassC> classCDao = OrmManager.getDao(ClassC.class);
 
         classCDao.insert(classC);
-        // classCDao.findAll().forEach(System.out::println);
+        classCDao.findAll().forEach(System.out::println);
+        System.out.println(classCDao.findById(1));
 
         SingleC singleC = new SingleC();
         singleC.setIntA(1);
