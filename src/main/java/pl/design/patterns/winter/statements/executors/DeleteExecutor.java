@@ -3,9 +3,9 @@ package pl.design.patterns.winter.statements.executors;
 import lombok.extern.apachecommons.CommonsLog;
 import pl.design.patterns.winter.exceptions.CouldNotInsertIntoTableException;
 import pl.design.patterns.winter.inheritance.mapping.InheritanceMapping;
-import pl.design.patterns.winter.query.DeleteQueryBuilder;
-import pl.design.patterns.winter.query.QueryBuildDirector;
-import pl.design.patterns.winter.query.QueryBuilder;
+import pl.design.patterns.winter.statements.query.DeleteQueryBuilder;
+import pl.design.patterns.winter.statements.query.QueryBuildDirector;
+import pl.design.patterns.winter.statements.query.QueryBuilder;
 
 import javax.sql.DataSource;
 import java.lang.reflect.InvocationTargetException;
@@ -13,12 +13,6 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import javax.sql.DataSource;
-
-import pl.design.patterns.winter.inheritance.mapping.InheritanceMapping;
-import pl.design.patterns.winter.statements.query.DeleteQuery;
-
-import lombok.extern.apachecommons.CommonsLog;
 
 @CommonsLog
 public class DeleteExecutor {

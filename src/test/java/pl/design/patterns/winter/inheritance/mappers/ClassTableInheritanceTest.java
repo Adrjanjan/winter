@@ -5,26 +5,14 @@ import static org.junit.Assert.assertEquals;
 
 import java.lang.reflect.InvocationTargetException;
 
-import lombok.Getter;
-import lombok.Setter;
 import org.junit.Assert;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
-import pl.design.patterns.winter.annotations.DatabaseField;
-import pl.design.patterns.winter.annotations.DatabaseTable;
-import pl.design.patterns.winter.annotations.Id;
 import pl.design.patterns.winter.domain.classtable.ClassB;
 import pl.design.patterns.winter.domain.classtable.ClassC;
 import pl.design.patterns.winter.domain.classtable.ClassD;
-import pl.design.patterns.winter.domain.singletable.SingleB;
-import pl.design.patterns.winter.domain.singletable.SingleC;
-import pl.design.patterns.winter.domain.singletable.SingleD;
-import pl.design.patterns.winter.inheritance.InheritanceMappingType;
 import pl.design.patterns.winter.inheritance.mapping.InheritanceMapping;
-import pl.design.patterns.winter.query.DeleteQueryBuilder;
-import pl.design.patterns.winter.query.InsertQueryBuilder;
-import pl.design.patterns.winter.query.QueryBuildDirector;
+import pl.design.patterns.winter.statements.query.DeleteQueryBuilder;
 import pl.design.patterns.winter.schemas.DatabaseSchema;
 import pl.design.patterns.winter.statements.query.InsertQueryBuilder;
 import pl.design.patterns.winter.statements.query.QueryBuildDirector;
@@ -138,7 +126,7 @@ public class ClassTableInheritanceTest<T> {
         DatabaseSchema databaseSchema = new DatabaseSchema();
         InheritanceMapper mapper = new SingleTableInheritanceMapper(databaseSchema);
 
-        DeleteQueryBuilder deleteQueryBuilder = new DeleteQueryBuilder(mapper.map(SingleB.class));
+        DeleteQueryBuilder deleteQueryBuilder = new DeleteQueryBuilder(mapper.map(ClassB.class));
 
         // when
         var b = new ClassB();
@@ -152,7 +140,55 @@ public class ClassTableInheritanceTest<T> {
                 .build();
 
         // then
-        Assert.assertEquals("XXX", sql);
+        Assert.assertEquals("DELETE FROM class_a WHERE int_a = 0; ", sql);
     }
+
+    @Test
+    void deleteQueryForClassClassC() throws InvocationTargetException, IllegalAccessException {
+        // given
+        DatabaseSchema databaseSchema = new DatabaseSchema();
+        InheritanceMapper mapper = new ClassTableInheritanceMapper(databaseSchema);
+        DeleteQueryBuilder deleteQueryBuilder = new DeleteQueryBuilder(mapper.map(ClassC.class));
+
+        // when
+        var c = new ClassC();
+        c.setIntC(3);
+        c.setStringC("C");
+        c.setIntB(2);
+        c.setStringB("B");
+        c.setIntA(1);
+        c.setStringA("A");
+
+        QueryBuildDirector<T> queryBuildDirector = new QueryBuildDirector<>(deleteQueryBuilder);
+        String sql = queryBuildDirector.withObject((T) c)
+                .build();
+
+        // then
+        Assert.assertEquals("DELETE FROM class_c WHERE int_a = 0; DELETE FROM class_a WHERE int_a = 0; DELETE FROM class_b WHERE int_a = 0; ", sql);
+    }
+
+    @Test
+    void deleteQueryForClassClassD() throws InvocationTargetException, IllegalAccessException {
+        // given
+        DatabaseSchema databaseSchema = new DatabaseSchema();
+        InheritanceMapper mapper = new ClassTableInheritanceMapper(databaseSchema);
+        DeleteQueryBuilder deleteQueryBuilder = new DeleteQueryBuilder(mapper.map(ClassD.class));
+
+        // when
+        var d = new ClassD();
+        d.setIntD(4);
+        d.setStringD("D");
+        d.setIntA(1);
+        d.setStringA("A");
+
+        QueryBuildDirector<T> queryBuildDirector = new QueryBuildDirector<>(deleteQueryBuilder);
+        String sql = queryBuildDirector.withObject((T) d)
+                .build();
+
+
+        //then
+        Assert.assertEquals("", sql, "DELETE FROM class_d WHERE int_a = 0; DELETE FROM class_a WHERE int_a = 0; ");
+    }
+
 
 }

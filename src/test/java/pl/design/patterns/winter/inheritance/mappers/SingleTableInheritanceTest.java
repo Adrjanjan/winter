@@ -13,9 +13,9 @@ import pl.design.patterns.winter.domain.singletable.SingleB;
 import pl.design.patterns.winter.domain.singletable.SingleC;
 import pl.design.patterns.winter.domain.singletable.SingleD;
 import pl.design.patterns.winter.inheritance.mapping.InheritanceMapping;
-import pl.design.patterns.winter.query.DeleteQueryBuilder;
-import pl.design.patterns.winter.query.InsertQueryBuilder;
-import pl.design.patterns.winter.query.QueryBuildDirector;
+import pl.design.patterns.winter.statements.query.DeleteQueryBuilder;
+import pl.design.patterns.winter.statements.query.InsertQueryBuilder;
+import pl.design.patterns.winter.statements.query.QueryBuildDirector;
 import pl.design.patterns.winter.schemas.DatabaseSchema;
 import pl.design.patterns.winter.statements.query.InsertQueryBuilder;
 import pl.design.patterns.winter.statements.query.QueryBuildDirector;
@@ -24,7 +24,7 @@ import pl.design.patterns.winter.statements.query.QueryBuildDirector;
 public class SingleTableInheritanceTest<T> {
 
     @Test
-    void singleTableInheritance_checkMappingsCorrectness() throws InvocationTargetException, IllegalAccessException {
+    void singleTableInheritance_checkMappingsCorrectness() {
         // given
         DatabaseSchema databaseSchema = new DatabaseSchema();
         InheritanceMapper mapper = new SingleTableInheritanceMapper(databaseSchema);

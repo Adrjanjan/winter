@@ -1,10 +1,11 @@
-package pl.design.patterns.winter.query;
+package pl.design.patterns.winter.statements.query;
 
 import pl.design.patterns.winter.annotations.DatabaseTable;
 import pl.design.patterns.winter.annotations.Id;
 import pl.design.patterns.winter.inheritance.InheritanceMappingType;
 import pl.design.patterns.winter.inheritance.mapping.InheritanceMapping;
 import pl.design.patterns.winter.schemas.TableSchema;
+import pl.design.patterns.winter.utils.FieldsUtil;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -34,7 +35,7 @@ public class DeleteQueryBuilder extends QueryBuilder {
     @Override
     <T> QueryBuilder withObject(T object) {
         this.object = object;
-        fields = getFieldsToIncludeInQuery(object);
+        fields = FieldsUtil.getAllFieldsInClassHierarchy(object.getClass());
         return this;
     }
 
@@ -62,21 +63,21 @@ public class DeleteQueryBuilder extends QueryBuilder {
     }
 
     @Override
-    QueryBuilder setValues() throws InvocationTargetException, IllegalAccessException {
+    QueryBuilder setValues() {
         return this;
     }
 
     @Override
-        //TODO ask -> testy
-    QueryBuilder withCondition() {
+    QueryBuilder withCondition(int id, boolean isConditionSet) {
         setTableSchema.forEach(tableSchema -> mapTableSchemaToBuilder.get(tableSchema)
                 .append(" WHERE ")
                 .append(tableSchema.getIdField().getColumnName())
                 .append(" = ")
-                .append(tableSchema.getIdField().getColumnName())
+                .append(id)
                 .append(";"));
         return this;
     }
+
 
     @Override
     QueryBuilder compose() {
