@@ -110,48 +110,9 @@ public class ClassTableInheritanceTest<T> {
         String sql = queryBuildDirector.withObject((T) d)
                 .build();
 
-        QueryBuildDirector<T> queryBuildDirector = new QueryBuildDirector<>(insertQueryBuilder);
-        String sql = queryBuildDirector.withObject((T) d)
-                .build();
-
         //then
         Assert.assertEquals("", sql,
                 "INSERT INTO b (int_b, string_b ) VALUES ( 2, \"B\" ); INSERT INTO a (string_a, int_a ) VALUES ( \"A\", 1 ); ");
     }
 
-    @Getter
-    @Setter
-    @DatabaseTable(inheritanceType = InheritanceMappingType.CLASS_TABLE)
-    public class A {
-        @DatabaseField
-        public String stringA;
-
-        @Id
-        @DatabaseField
-        private int intA;
-    }
-
-    @Getter
-    @Setter
-    @DatabaseTable(inheritanceType = InheritanceMappingType.CLASS_TABLE)
-    public class B extends A {
-        @Id
-        @DatabaseField
-        protected int intB;
-
-        @DatabaseField
-        String stringB;
-    }
-
-    @Getter
-    @Setter
-    @DatabaseTable(inheritanceType = InheritanceMappingType.CLASS_TABLE)
-    class C extends B {
-        @DatabaseField
-        protected String stringC;
-
-        @Id
-        @DatabaseField
-        private int intC;
-    }
 }

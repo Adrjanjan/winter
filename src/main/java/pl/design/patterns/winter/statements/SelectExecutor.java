@@ -1,17 +1,19 @@
 package pl.design.patterns.winter.statements;
 
-import lombok.extern.apachecommons.CommonsLog;
-import pl.design.patterns.winter.inheritance.mapping.InheritanceMapping;
-import pl.design.patterns.winter.object.assembler.ObjectAssembler;
-import pl.design.patterns.winter.query.SelectQuery;
-
-import javax.sql.DataSource;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
+
+import javax.sql.DataSource;
+
+import pl.design.patterns.winter.inheritance.mapping.InheritanceMapping;
+import pl.design.patterns.winter.object.assembler.ObjectAssembler;
+import pl.design.patterns.winter.query.SelectQuery;
+
+import lombok.extern.apachecommons.CommonsLog;
 
 @CommonsLog
 public class SelectExecutor {
@@ -45,7 +47,7 @@ public class SelectExecutor {
             return (T) objectAssembler.assemble(clazz, resultSet);
 
         } catch (SQLException e) {
-            log.error("Nie udalo sie wykonać selecta findById("+id+")");
+            log.error("Nie udalo sie wykonać selecta findById(" + id + ")");
             throw new RuntimeException(e);
         } catch (InstantiationException | InvocationTargetException | NoSuchMethodException | IllegalAccessException e) {
             e.printStackTrace();
@@ -60,12 +62,11 @@ public class SelectExecutor {
 
         try (Connection conn = dataSource.getConnection()) {
             Statement stmt = conn.createStatement();
-            // executeQuery zwraca ResultSet
-            log.info("Wykonuje select findAll");
+            log.info("Executing select findAll with query: " + query);
             ResultSet resultSet = stmt.executeQuery(query);
             return objectAssembler.assembleMultiple(clazz, resultSet);
         } catch (SQLException e) {
-            log.error("Nie udalo sie wykonać selecta findAll");
+            log.error("Failed to execute query findAll");
             throw new RuntimeException(e);
         } catch (InstantiationException | InvocationTargetException | NoSuchMethodException | IllegalAccessException e) {
             e.printStackTrace();

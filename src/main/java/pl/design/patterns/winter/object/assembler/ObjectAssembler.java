@@ -7,6 +7,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import pl.design.patterns.winter.utils.FieldsUtil;
+import pl.design.patterns.winter.utils.NameUtils;
+
 public class ObjectAssembler<T> {
 
     public T assemble(Class<T> clazz, ResultSet resultSet)
@@ -28,10 +31,11 @@ public class ObjectAssembler<T> {
 
     private void loadResultSetIntoObject(ResultSet resultSet, Object object) throws IllegalArgumentException, IllegalAccessException, SQLException {
         Class<?> clazz = object.getClass();
-        for (Field field : clazz.getDeclaredFields()) {
+        for (Field field : FieldsUtil.getAllFieldsInClassHierarchy(clazz)) {
             field.setAccessible(true);
-            Object value = resultSet.getObject(0, object.getClass());
-            if (value != null) {
+            Object value = resultSet.getObject(NameUtils.extractColumnName(field));
+
+            if ( value != null ) {
                 Class<?> type = field.getType();
                 Class<?> boxed = boxPrimitiveClass(type);
                 boxed.cast(value);

@@ -8,6 +8,7 @@ import pl.design.patterns.winter.exceptions.NonNullableFieldIsNull;
 import pl.design.patterns.winter.inheritance.mapping.InheritanceMapping;
 import pl.design.patterns.winter.schemas.ColumnSchema;
 import pl.design.patterns.winter.schemas.TableSchema;
+import pl.design.patterns.winter.utils.FieldsUtil;
 
 public class InsertQueryBuilder extends QueryBuilder {
 
@@ -32,7 +33,7 @@ public class InsertQueryBuilder extends QueryBuilder {
     @Override
     <T> QueryBuilder withObject(T object) {
         this.object = object;
-        fields = getFieldsToIncludeInQuery(object);
+        fields = FieldsUtil.getAllFieldsInClassHierarchy(object.getClass());
         return this;
     }
 

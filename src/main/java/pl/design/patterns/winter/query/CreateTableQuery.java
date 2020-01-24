@@ -32,7 +32,7 @@ public class CreateTableQuery extends QueryBuilder {
     @Override
     QueryBuilder setTable() {
         query.append(((TableSchema) object).getTableName())
-                .append(" ");
+                .append(" (\t");
         return this;
     }
 
