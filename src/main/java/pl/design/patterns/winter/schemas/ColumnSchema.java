@@ -25,7 +25,7 @@ public class ColumnSchema {
 
     private String columnName;
 
-    private SQLType sqlType;
+    private String sqlType;
 
     private Class javaType;
 
