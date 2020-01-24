@@ -30,9 +30,15 @@ public class UpdateQuery {
         sb.append(tableWithIdField.getTableName());
 
         sb.append(" SET (");
+        Object objectForLoop;
         for (ColumnSchema column : tableWithIdField.getColumns()) {
             //TODO Update ID?
             //Czy chcemy updatowac Id-ki ...?
+            try {
+                objectForLoop = column.get(objectToUpdate);
+            } catch (Exception e) {
+                continue;
+            }
             sb.append(column.getColumnName())
                     .append(", ");
         }
@@ -41,13 +47,16 @@ public class UpdateQuery {
         sb.append(") = (");
 
         //uzyskanie wartosci danych pol
-        Object objectForLoop;
         for (ColumnSchema columnSchema : tableWithIdField.getColumns()) {
             //TODO Update ID?
             //updatowanie Id-kow ... ?
-            objectForLoop = columnSchema.get(objectToUpdate);
+            try {
+                objectForLoop = columnSchema.get(objectToUpdate);
+            } catch (Exception e) {
+                continue;
+            }
             if (objectForLoop == null) {
-                sb.append("NULL, ");
+                sb.append("NULL,");
                 continue;
             }
             if (objectForLoop.getClass() == String.class)
