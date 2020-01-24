@@ -50,6 +50,7 @@ public class WinterApplication {
 
         singleCDao.insert(singleC);
         singleCDao.findAll().forEach(System.out::println);
+        System.out.println(singleCDao.findById(1).getStringC());
 
 
         ConcreteD concreteD = new ConcreteD();
