@@ -1,7 +1,7 @@
 package pl.design.patterns.winter.inheritance.mappers;
 
 import static org.hamcrest.CoreMatchers.containsString;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.Assert.assertEquals;
 
 import java.lang.reflect.InvocationTargetException;
 
@@ -105,6 +105,10 @@ public class ClassTableInheritanceTest<T> {
         d.setStringD("D");
         d.setIntA(1);
         d.setStringA("A");
+
+        QueryBuildDirector<T> queryBuildDirector = new QueryBuildDirector<>(insertQueryBuilder);
+        String sql = queryBuildDirector.withObject((T) d)
+                .build();
 
         QueryBuildDirector<T> queryBuildDirector = new QueryBuildDirector<>(insertQueryBuilder);
         String sql = queryBuildDirector.withObject((T) d)

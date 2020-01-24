@@ -7,8 +7,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import pl.design.patterns.winter.annotations.DatabaseField;
-
 public class ObjectAssembler<T> {
 
     public T assemble(Class<T> clazz, ResultSet resultSet)
@@ -32,12 +30,13 @@ public class ObjectAssembler<T> {
         Class<?> clazz = object.getClass();
         for (Field field : clazz.getDeclaredFields()) {
             field.setAccessible(true);
-            DatabaseField column = field.getAnnotation(DatabaseField.class);
-            Object value = resultSet.getObject(column.name());
-            Class<?> type = field.getType();
-            Class<?> boxed = boxPrimitiveClass(type);
-            boxed.cast(value);
-            field.set(object, value);
+            Object value = resultSet.getObject(0, object.getClass());
+            if (value != null) {
+                Class<?> type = field.getType();
+                Class<?> boxed = boxPrimitiveClass(type);
+                boxed.cast(value);
+                field.set(object, value);
+            }
         }
     }
 
