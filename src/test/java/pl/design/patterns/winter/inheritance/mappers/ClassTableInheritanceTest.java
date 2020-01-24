@@ -111,9 +111,6 @@ public class ClassTableInheritanceTest<T> {
         String sql = queryBuildDirector.withObject((T) d)
                 .build();
 
-//        QueryBuildDirector<T> queryBuildDirector = new QueryBuildDirector<>(insertQueryBuilder);
-//        String sql = queryBuildDirector.withObject((T) d)
-//                .build();
 
         //then
         Assert.assertEquals("", sql,
