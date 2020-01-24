@@ -35,7 +35,7 @@ public class DeleteQueryBuilder extends QueryBuilder {
     @Override
     <T> QueryBuilder withObject(T object) {
         this.object = object;
-        fields = FieldsUtil.getAllFieldsInClassHierarchy(object.getClass());
+        fields = FieldsUtil.getAllFieldsInClassHierarchy((Class)object);
         return this;
     }
 

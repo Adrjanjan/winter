@@ -30,28 +30,28 @@ public class DeleteExecutor {
         this.inheritanceMapping = inheritanceMapping;
     }
 
-    public <T> void execute(T object) {
-        log.info("Deleting object of the class: " + object.getClass());
+    public <T> void execute(int id, Class clazz) {
+        log.info("Deleting object of the class: " + clazz);
 
         QueryBuilder builder = new DeleteQueryBuilder(inheritanceMapping);
         QueryBuildDirector<T> queryBuildDirector = new QueryBuildDirector<>(builder);
         String query;
         try {
-            query = queryBuildDirector.withObject(object)
+            query = queryBuildDirector.withObject((T)clazz).withCondition(id)
                     .build();
         } catch (InvocationTargetException | IllegalAccessException e) {
-            throw new CouldNotInsertIntoTableException(String.format("Could not delete object %s", object.toString()), e);
+            throw new CouldNotInsertIntoTableException(String.format("Could not delete object %s", clazz.toString()), e);
         }
 
         try (Connection conn = dataSource.getConnection()) {
             Statement stmt = conn.createStatement();
             stmt.execute(query);
-            log.info("Deleted object of class: " + object.getClass()
+            log.info("Deleted object of class: " + clazz
                     .toString());
         } catch (SQLException e) {
-            log.error("Could not delete object of class: " + object.getClass()
+            log.error("Could not delete object of class: " + clazz
                     .toString());
-            throw new CouldNotInsertIntoTableException(String.format("Could not delete object %s", object.toString()), e);
+            throw new CouldNotInsertIntoTableException(String.format("Could not delete object %s", clazz.toString()), e);
 
         }
     }

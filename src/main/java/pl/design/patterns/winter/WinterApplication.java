@@ -28,6 +28,8 @@ public class WinterApplication {
         concreteCDao.insert(concreteC);
         concreteCDao.findAll()
                 .forEach(System.out::println);
+        System.out.println(concreteCDao.findById(1));
+        concreteCDao.deleteById(concreteC.getIntA());
 
         ClassC classC = new ClassC();
         classC.setIntA(1);
@@ -40,6 +42,7 @@ public class WinterApplication {
         classCDao.insert(classC);
         classCDao.findAll().forEach(System.out::println);
         System.out.println(classCDao.findById(1));
+        classCDao.deleteById(classC.getIntA());
 
         SingleC singleC = new SingleC();
         singleC.setIntA(1);
@@ -54,6 +57,7 @@ public class WinterApplication {
         singleCDao.findAll()
                 .forEach(System.out::println);
         System.out.println(singleCDao.findById(1));
+        singleCDao.deleteById(singleC.getIntA());
 
         ConcreteD concreteD = new ConcreteD();
         concreteD.setIntA(1);

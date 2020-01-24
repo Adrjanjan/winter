@@ -43,8 +43,8 @@ public class Dao<T> {
         updateExecutor.update(obj, clazz);
     }
 
-    public void deleteById(T obj) {
-        deleteExecutor.execute(obj);
+    public void deleteById(int id) {
+        deleteExecutor.execute(id, this.clazz);
     }
 
 }
