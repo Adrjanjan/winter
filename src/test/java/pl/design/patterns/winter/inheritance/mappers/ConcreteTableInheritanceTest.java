@@ -12,6 +12,7 @@ import pl.design.patterns.winter.domain.concretetable.ConcreteB;
 import pl.design.patterns.winter.domain.concretetable.ConcreteC;
 import pl.design.patterns.winter.domain.concretetable.ConcreteD;
 import pl.design.patterns.winter.inheritance.mapping.InheritanceMapping;
+import pl.design.patterns.winter.query.DeleteQueryBuilder;
 import pl.design.patterns.winter.query.InsertQueryBuilder;
 import pl.design.patterns.winter.query.QueryBuildDirector;
 import pl.design.patterns.winter.schemas.DatabaseSchema;
@@ -110,5 +111,71 @@ class ConcreteTableInheritanceTest<T> {
 
         // then
         Assert.assertEquals("INSERT INTO concrete_d ( int_d, string_d, int_a, string_a ) VALUES ( 4, \"D\", 1, \"A\" ); ", sql);
+    }
+
+    @Test
+    void deleteQueryForClassConcreteB() throws InvocationTargetException, IllegalAccessException {
+        // given
+        DatabaseSchema databaseSchema = new DatabaseSchema();
+        InheritanceMapper mapper = new ConcreteTableInheritanceMapper(databaseSchema);
+        DeleteQueryBuilder deleteQueryBuilder = new DeleteQueryBuilder(mapper.map(ConcreteB.class));
+
+        // when
+        var b = new ConcreteB();
+        b.setIntB(2);
+        b.setStringB("B");
+        b.setStringA("A");
+        b.setIntA(1);
+
+        QueryBuildDirector<T> queryBuildDirector = new QueryBuildDirector<>(deleteQueryBuilder);
+        String sql = queryBuildDirector.withObject((T) b)
+                .build();
+
+        // then
+        Assert.assertEquals("DELETE FROM concrete_b WHERE int_a = 1; ", sql);
+    }
+
+    @Test
+    void deleteQueryForClassConcreteC() throws InvocationTargetException, IllegalAccessException {
+        // given
+        DatabaseSchema databaseSchema = new DatabaseSchema();
+        InheritanceMapper mapper = new ConcreteTableInheritanceMapper(databaseSchema);
+        DeleteQueryBuilder deleteQueryBuilder = new DeleteQueryBuilder(mapper.map(ConcreteC.class));
+
+        // when
+        var c = new ConcreteC();
+        c.setIntB(2);
+        c.setStringB("c");
+        c.setStringA("A");
+        c.setIntA(1);
+
+        QueryBuildDirector<T> queryBuildDirector = new QueryBuildDirector<>(deleteQueryBuilder);
+        String sql = queryBuildDirector.withObject((T) c)
+                .build();
+
+        // then
+        Assert.assertEquals("DELETE FROM concrete_c WHERE int_a = 1; ", sql);
+    }
+
+    @Test
+    void deleteQueryForClassConcreteD() throws InvocationTargetException, IllegalAccessException {
+        // given
+        DatabaseSchema databaseSchema = new DatabaseSchema();
+        InheritanceMapper mapper = new ConcreteTableInheritanceMapper(databaseSchema);
+        DeleteQueryBuilder deleteQueryBuilder = new DeleteQueryBuilder(mapper.map(ConcreteD.class));
+
+        // when
+        var d = new ConcreteD();
+        d.setIntD(4);
+        d.setStringD("D");
+        d.setIntA(1);
+        d.setStringA("A");
+
+        QueryBuildDirector<T> queryBuildDirector = new QueryBuildDirector<>(deleteQueryBuilder);
+        String sql = queryBuildDirector.withObject((T) d)
+                .build();
+
+        // then
+        Assert.assertEquals("DELETE FROM concrete_d WHERE int_a = 1; ", sql);
     }
 }
