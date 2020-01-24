@@ -13,6 +13,9 @@ import pl.design.patterns.winter.domain.singletable.SingleB;
 import pl.design.patterns.winter.domain.singletable.SingleC;
 import pl.design.patterns.winter.domain.singletable.SingleD;
 import pl.design.patterns.winter.inheritance.mapping.InheritanceMapping;
+import pl.design.patterns.winter.statements.query.DeleteQueryBuilder;
+import pl.design.patterns.winter.statements.query.InsertQueryBuilder;
+import pl.design.patterns.winter.statements.query.QueryBuildDirector;
 import pl.design.patterns.winter.schemas.DatabaseSchema;
 import pl.design.patterns.winter.statements.query.InsertQueryBuilder;
 import pl.design.patterns.winter.statements.query.QueryBuildDirector;
@@ -21,7 +24,7 @@ import pl.design.patterns.winter.statements.query.QueryBuildDirector;
 public class SingleTableInheritanceTest<T> {
 
     @Test
-    void singleTableInheritance_checkMappingsCorrectness() throws InvocationTargetException, IllegalAccessException {
+    void singleTableInheritance_checkMappingsCorrectness() {
         // given
         DatabaseSchema databaseSchema = new DatabaseSchema();
         InheritanceMapper mapper = new SingleTableInheritanceMapper(databaseSchema);
@@ -116,6 +119,77 @@ public class SingleTableInheritanceTest<T> {
 
         // then
         Assert.assertEquals("INSERT INTO single_a ( int_a, string_a, int_d, string_d ) VALUES ( 1, \"A\", 4, \"D\" ); ", sql);
+    }
+
+    @Test
+    void deleteQueryForClassSingleB() throws InvocationTargetException, IllegalAccessException {
+        // given
+        DatabaseSchema databaseSchema = new DatabaseSchema();
+        InheritanceMapper mapper = new SingleTableInheritanceMapper(databaseSchema);
+
+        DeleteQueryBuilder deleteQueryBuilder = new DeleteQueryBuilder(mapper.map(SingleB.class));
+
+        // when
+        var b = new SingleB();
+        b.setIntA(1);
+        b.setStringA("A");
+        b.setStringB("B");
+        b.setIntB(2);
+
+        QueryBuildDirector<T> queryBuildDirector = new QueryBuildDirector<>(deleteQueryBuilder);
+        String sql = queryBuildDirector.withObject((T) b)
+                .build();
+
+        // then
+        Assert.assertEquals("DELETE FROM single_a WHERE int_a = 1; ", sql);
+    }
+
+    @Test
+    void deleteQueryForClassSingleC() throws InvocationTargetException, IllegalAccessException {
+        // given
+        DatabaseSchema databaseSchema = new DatabaseSchema();
+        InheritanceMapper mapper = new SingleTableInheritanceMapper(databaseSchema);
+
+        DeleteQueryBuilder deleteQueryBuilder = new DeleteQueryBuilder(mapper.map(SingleC.class));
+
+        // when
+        var c = new SingleC();
+        c.setIntA(1);
+        c.setStringA("A");
+        c.setIntB(2);
+        // setStringB intentionally not set to see if NULL will be in query
+        c.setIntC(3);
+        c.setStringC("C");
+
+        QueryBuildDirector<T> queryBuildDirector = new QueryBuildDirector<>(deleteQueryBuilder);
+        String sql = queryBuildDirector.withObject((T) c)
+                .build();
+
+        // then
+        Assert.assertEquals("DELETE FROM single_a WHERE int_a = 1; ", sql);
+    }
+
+    @Test
+    void deleteQueryForClassSingleD() throws InvocationTargetException, IllegalAccessException {
+        // given
+        DatabaseSchema databaseSchema = new DatabaseSchema();
+        InheritanceMapper mapper = new SingleTableInheritanceMapper(databaseSchema);
+
+        DeleteQueryBuilder deleteQueryBuilder = new DeleteQueryBuilder(mapper.map(SingleD.class));
+
+        // when
+        var d = new SingleD();
+        d.setIntA(1);
+        d.setStringA("A");
+        d.setIntD(4);
+        d.setStringD("D");
+
+        QueryBuildDirector<T> queryBuildDirector = new QueryBuildDirector<>(deleteQueryBuilder);
+        String sql = queryBuildDirector.withObject((T) d)
+                .build();
+
+        // then
+        Assert.assertEquals("DELETE FROM single_a WHERE int_a = 1; ", sql);
     }
 
 }
